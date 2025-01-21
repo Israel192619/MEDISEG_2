@@ -1,0 +1,11 @@
+{
+    "name": "Licitacion",
+    "alias": "licitacion",
+    "description": "Este modulo maneja y controla las licitaciones",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Licitacion\\Providers\\LicitacionServiceProvider"
+    ],
+    "files": []
+}
