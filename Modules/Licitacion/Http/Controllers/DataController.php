@@ -35,11 +35,30 @@ class DataController extends Controller
 
         if ($is_tender_enabled && (auth()->user()->can('superadmin') || auth()->user()->can('tender.view') || auth()->user()->can('job_sheet.view_assigned') || auth()->user()->can('job_sheet.view_all'))) {
             Menu::modify('admin-sidebar-menu', function ($menu) use ($background_color) {
-                $menu->url(
-                            action([\Modules\Licitacion\Http\Controllers\DashboardController::class, 'index']),
+                $menu->dropdown(
+                    __('licitacion::lang.tender'),
+                    
+                    function($sub){
+                        if (auth()->user()->can('licitacion.view')) {
+                            $sub->url(
+                                action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'index']),
+                                __('licitacion::lang.tender_list'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'licitacion' && request()->segment(2) == '']
+                            );
+                        }
+                        if (auth()->user()->can('licitacion.create')) {
+                            $sub->url(
+                                action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'create']),
+                                __('licitacion::lang.create_tender'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'licitacion' && request()->segment(2) == 'create']
+                            );
+                        }
+                    },
+                    ['icon' => 'fa fas fa-file-contract', 'active' => request()->segment(1) == 'tender', 'style' => 'background-color:'.$background_color]
+                            /* action([\Modules\Licitacion\Http\Controllers\DashboardController::class, 'index']),
                             __('licitacion::lang.tender'),
-                            ['icon' => 'fa fas fa-file-contract', 'active' => request()->segment(1) == 'tender', 'style' => 'background-color:'.$background_color]
-                        )
+                            ['icon' => 'fa fas fa-file-contract', 'active' => request()->segment(1) == 'tender', 'style' => 'background-color:'.$background_color] */
+                )
                 ->order(24);
             });
         }
