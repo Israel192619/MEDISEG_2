@@ -9,9 +9,45 @@ use App\Business;
 use App\BusinessLocation;
 use App\User;
 use App\Contact;
+use App\Utils\BusinessUtil;
+use App\Utils\ContactUtil;
+use Modules\Licitacion\Utils\LicitacionUtil;
 
 class LicitacionController extends Controller
 {
+        /**
+     * All Utils instance.
+     */
+    protected $contactUtil;
+
+    protected $businessUtil;
+
+    protected $licitacionUtil;
+
+/*     protected $transactionUtil;
+
+    protected $productUtil; */
+    public function __construct(ContactUtil $contactUtil, BusinessUtil $businessUtil, LicitacionUtil $licitacionUtil/* , TransactionUtil $transactionUtil, ModuleUtil $moduleUtil, ProductUtil $productUtil */)
+    {
+        $this->contactUtil = $contactUtil;
+        $this->businessUtil = $businessUtil;
+        $this->licitacionUtil = $licitacionUtil;
+        /* , $this->transactionUtil,
+        /* $this->transactionUtil = $transactionUtil;
+        $this->moduleUtil = $moduleUtil;
+        $this->productUtil = $productUtil; */
+
+        /* $this->dummyPaymentLine = ['method' => '', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
+            'is_return' => 0, 'transaction_no' => '', ];
+
+        $this->shipping_status_colors = [
+            'ordered' => 'bg-yellow',
+            'packed' => 'bg-info',
+            'shipped' => 'bg-navy',
+            'delivered' => 'bg-green',
+            'cancelled' => 'bg-red',
+        ]; */
+    }
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -37,7 +73,21 @@ class LicitacionController extends Controller
      */
     public function create()
     {
-        return view('licitacion::create');
+        $award_method = $this->licitacionUtil->tender_award_method();
+        $cities = $this->licitacionUtil->tender_cities();
+        $business_id = request()->session()->get('user.business_id');
+        $walk_in_customer = $this->contactUtil->getWalkInCustomer($business_id);
+        $default_datetime = $this->businessUtil->format_date('now', true);
+        $orderStatuses = $this->licitacionUtil->tender_statuses();
+        $default_purchase_status = null;
+        return view('licitacion::create')
+        ->with(compact(
+            'default_datetime',
+            'walk_in_customer',
+                        'orderStatuses',
+                    'default_purchase_status',
+                        'cities',
+                    'award_method'));
     }
 
     /**

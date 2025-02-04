@@ -100,7 +100,7 @@ $(document).ready(function() {
         minimumInputLength: 1,
         language: {
             inputTooShort: function (args) {
-                return LANG.please_enter + args.minimum + LANG.or_more_characters;
+                return LANG.please_enter + ' ' + args.minimum +' '+ LANG.or_more_characters;
             },
             noResults: function() {
                 var name = $('#customer_id')

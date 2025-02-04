@@ -12,10 +12,44 @@ use Notification;
 
 class LicitacionUtil extends Util
 {
+    public static function tender_statuses()
+    {
+        return [
+            'delivered' => __('licitacion::lang.delivered'),
+            'lost' => __('licitacion::lang.lost'),
+            'won' => __('licitacion::lang.won'),
+            'uploaded' => __('licitacion::lang.uploaded'),
+            'verified' => __('licitacion::lang.verified'),
+            'pending' => __('licitacion::lang.pending'),
+            'canceled' => __('licitacion::lang.canceled'),
+        ];
+    }
+    public static function tender_cities()
+    {
+        return [
+            'la_paz' => 'La Paz',
+            'oruro' => 'Oruro',
+            'potosi' => 'Potosi',
+            'cochabamba' => 'Cochabamba',
+            'chuquisaca' => 'Chuquisaca',
+            'tarija' => 'Tarija',
+            'pando' => 'Pando',
+            'beni' => 'Beni',
+            'santa_cruz' => 'Santa Cruz',
+            'sucre' => 'Sucre',
+        ];
+    }
+    public static function tender_award_method()
+    {
+        return [
+            'per_item' => __('licitacion::lang.per_item'),
+            'total' => __('licitacion::lang.total'),
+        ];
+    }
     /* public function replaceModuleTags($business_id, $data, $job_sheet)
     {
         $id = empty($job_sheet->repair_job_sheet_id) ? $job_sheet->id : $job_sheet->repair_job_sheet_id;
-
+        
         $job_sheet = JobSheet::with('customer', 'technician', 'Brand',
                         'Device', 'deviceModel', 'status')
                         ->where('business_id', $business_id)
