@@ -12,9 +12,11 @@ use App\Contact;
 use App\Utils\BusinessUtil;
 use App\Utils\ContactUtil;
 use Modules\Licitacion\Utils\LicitacionUtil;
-
+use  Modules\Licitacion\Entities\Licitaciones;
 class LicitacionController extends Controller
 {
+    
+    
         /**
      * All Utils instance.
      */
@@ -54,6 +56,7 @@ class LicitacionController extends Controller
      */
     public function index()
     {
+        
         if (! auth()->user()->can('licitacion.view')) {
             abort(403, 'Unauthorized action.');
         }
@@ -72,7 +75,7 @@ class LicitacionController extends Controller
      * @return Renderable
      */
     public function create()
-    {
+    {    
         $award_method = $this->licitacionUtil->tender_award_method();
         $cities = $this->licitacionUtil->tender_cities();
         $business_id = request()->session()->get('user.business_id');
@@ -97,7 +100,14 @@ class LicitacionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'codigo_de_licitacion' => 'required',
+            'responsable_licitacion' => 'required',
+            'cuce' => 'required',
+        ]);
+
+        Licitaciones::create($request->all());
+        return redirect()->route('index')->with('success', 'Licitacion Creada');
     }
 
     /**
@@ -126,9 +136,15 @@ class LicitacionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Licitaciones $licitacion)
     {
-        //
+        $request->validate([
+            'codigo_de_licitacion' => 'required',
+            'responsable_licitacion' => 'required',
+            'cuce' => 'required',
+        ]);
+        $licitacion->update($request->all());
+        return redirect()->route('index')->with('success', 'Licitacion Actualizada');
     }
 
     /**
@@ -138,7 +154,11 @@ class LicitacionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $licitacion = find($id);
+        $licitacion->estado = 'anulado';
+        $licitacion->save();
+        
+        return redirect()->route('index')->with('success', 'Licitacion Eliminada');
     }
 
     

@@ -9,9 +9,50 @@ class Licitaciones extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
+    protected $table = 'licitaciones';
+    protected $fillable = [
+        'codigo_de_licitacion',
+        'entidad',
+        'responsable_licitacion',
+        'estado',
+        'ciudad',
+        'telefono',
+        'cuce',
+        'objeto_contratacion',
+        'tipo_de_proceso',
+        'forma_de_adjudicacion',
+        'fecha_vencimiento',
+        'mes',
+        'hora_de_subasta',
+        'garantias_solicitadas',
+        'prestacion_de_muestra',
+        'direccion_de_muestra',
+        'fecha_subida_proceso',
+        'resultado',
+        'envio_productos',
+        'envio_documentos',
+        'muestras',
+        'comision_de_entrega',
+        'otros_gastos_de_entrega',
+        'comisiones',
+        'gastos_poliza',
+        'solvencia_fiscal',
+        'poliza',
+        'precio_venta',
+        'inversion',
+        'gastos_operativos',
+        'impuestos',
+        'gastos_administrativos',
+        'comision',
+        'utiñidad',
+        'fecha_pago',
+        'monto_pago'
+    ];
+    
+    public $timestamps = false;
     
     
+        
    /*  protected static function newFactory()
     {
         return \Modules\Licitacion\Database\factories\LicitacionesFactory::new();
