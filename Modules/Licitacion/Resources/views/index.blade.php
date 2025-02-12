@@ -57,14 +57,14 @@
 		<table class="table table-bordered table-striped ajax_view" id="sell_table">
 			<thead>
 				<tr>
-					<th>@lang('messages.date')</th>
-					<th>@lang('purchase.ref_no')</th>
-					<th>@lang('sale.customer_name')</th>
-					<th>@lang('lang_v1.contact_no')</th>
-					<th>@lang('sale.location')</th>
-					<th>@lang('lang_v1.total_items')</th>
-					<th>@lang('lang_v1.added_by')</th>
-					<th>@lang('messages.action')</th>
+					<th>codigo_de_licitacion</th>
+					<th>entidad</th>
+					<th>responsable_licitacion</th>
+					<th>estado</th>
+					<th>ciudad</th>
+					<th>telefono</th>
+					<th>cuce</th>
+					<th>objeto_contratacion</th>
 				</tr>
 			</thead>
 		</table>
@@ -94,24 +94,7 @@ $(document).ready( function(){
         fixedHeader:false,
         aaSorting: [[0, 'desc']],
         "ajax": {
-            "url": '/sells/draft-dt?is_quotation=1',
-            "data": function ( d ) {
-                if($('#sell_list_filter_date_range').val()) {
-                    var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    var end = $('#sell_list_filter_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                    d.start_date = start;
-                    d.end_date = end;
-                }
-
-                if($('#sell_list_filter_location_id').length) {
-                    d.location_id = $('#sell_list_filter_location_id').val();
-                }
-                d.customer_id = $('#sell_list_filter_customer_id').val();
-
-                if($('#created_by').length) {
-                    d.created_by = $('#created_by').val();
-                }
-            }
+            "url": '/dataTable',
         },
         columnDefs: [ {
             "targets": 7,
@@ -119,14 +102,14 @@ $(document).ready( function(){
             "searchable": false
         } ],
         columns: [
-            { data: 'transaction_date', name: 'transaction_date'  },
-            { data: 'invoice_no', name: 'invoice_no'},
-            { data: 'conatct_name', name: 'conatct_name'},
-            { data: 'mobile', name: 'contacts.mobile'},
-            { data: 'business_location', name: 'bl.name'},
-            { data: 'total_items', name: 'total_items', "searchable": false},
-            { data: 'added_by', name: 'added_by'},
-            { data: 'action', name: 'action'}
+            { data: 'codigo_de_licitacion', name: 'codigo_de_licitacion'  },
+            { data: 'entidad', name: 'entidad'},
+            { data: 'responsable_licitacion', name: 'responsable_licitacion'},
+            { data: 'estado', name: 'estado'},
+            { data: 'ciudad', name: 'ciudad'},
+            { data: 'telefono', name: 'telefono'},
+            { data: 'cuce', name: 'cuce'},
+            { data: 'objeto_contratacion', name: 'objeto_contratacion'}
         ],
         "fnDrawCallback": function (oSettings) {
             __currency_convert_recursively($('#purchase_table'));
