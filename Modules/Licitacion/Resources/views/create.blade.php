@@ -325,26 +325,11 @@
     {!! Form::close() !!}
 
 </section>
-{{-- <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-	@include('contact.create', ['quick_add' => true])
-</div> --}}
-<!-- /.content -->
-{{-- <div class="modal fade register_details_modal" tabindex="-1" role="dialog" 
-	aria-labelledby="gridSystemModalLabel">
-</div>
-<div class="modal fade close_register_modal" tabindex="-1" role="dialog" 
-	aria-labelledby="gridSystemModalLabel">
-</div>
 
-<!-- quick product modal -->
-<div class="modal fade quick_add_product_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle"></div>
-
-<div class="modal fade types_of_service_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div> --}}
 
 @endsection
 
 @section('javascript')
-    {{-- <script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script> --}}
 
     <script type="text/javascript">
     //console.log($('#tender_add_form')); // Verifica si el formulario existe
