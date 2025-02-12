@@ -12,14 +12,12 @@ use App\Contact;
 use App\Utils\BusinessUtil;
 use App\Utils\ContactUtil;
 use Modules\Licitacion\Utils\LicitacionUtil;
-use  Modules\Licitacion\Entities\Licitaciones;
+use Modules\Licitacion\Entities\Licitaciones;
 use Yajra\DataTables\Facades\DataTables;
 
 class LicitacionController extends Controller
 {
-    
-    
-        /**
+    /**
      * All Utils instance.
      */
     protected $contactUtil;
@@ -28,11 +26,15 @@ class LicitacionController extends Controller
 
     protected $licitacionUtil;
 
-/*     protected $transactionUtil;
+    /*     protected $transactionUtil;
 
     protected $productUtil; */
-    public function __construct(ContactUtil $contactUtil, BusinessUtil $businessUtil, LicitacionUtil $licitacionUtil/* , TransactionUtil $transactionUtil, ModuleUtil $moduleUtil, ProductUtil $productUtil */)
-    {
+    public function __construct(
+        ContactUtil $contactUtil,
+        BusinessUtil $businessUtil,
+        LicitacionUtil $licitacionUtil
+    ) {
+        /* , TransactionUtil $transactionUtil, ModuleUtil $moduleUtil, ProductUtil $productUtil */
         $this->contactUtil = $contactUtil;
         $this->businessUtil = $businessUtil;
         $this->licitacionUtil = $licitacionUtil;
@@ -58,8 +60,7 @@ class LicitacionController extends Controller
      */
     public function index()
     {
-        
-        if (! auth()->user()->can('licitacion.view')) {
+        if (!auth()->user()->can('licitacion.view')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -69,9 +70,11 @@ class LicitacionController extends Controller
         $customers = Contact::customersDropdown($business_id, false);
 
         $sales_representative = User::forDropdown($business_id, false, false, true);
-        
+
         $licitaciones = Licitaciones::get();
-        return view('licitacion::index')->with(compact('licitaciones','business_locations', 'customers', 'sales_representative'));
+        return view('licitacion::index')->with(
+            compact('licitaciones', 'business_locations', 'customers', 'sales_representative')
+        );
     }
 
     /**
@@ -79,7 +82,7 @@ class LicitacionController extends Controller
      * @return Renderable
      */
     public function create()
-    {    
+    {
         $award_method = $this->licitacionUtil->tender_award_method();
         $cities = $this->licitacionUtil->tender_cities();
         $business_id = request()->session()->get('user.business_id');
@@ -87,14 +90,16 @@ class LicitacionController extends Controller
         $default_datetime = $this->businessUtil->format_date('now', true);
         $orderStatuses = $this->licitacionUtil->tender_statuses();
         $default_purchase_status = null;
-        return view('licitacion::create')
-        ->with(compact(
-            'default_datetime',
-            'walk_in_customer',
-                        'orderStatuses',
-                    'default_purchase_status',
-                        'cities',
-                    'award_method'));
+        return view('licitacion::create')->with(
+            compact(
+                'default_datetime',
+                'walk_in_customer',
+                'orderStatuses',
+                'default_purchase_status',
+                'cities',
+                'award_method'
+            )
+        );
     }
 
     /**
@@ -105,17 +110,22 @@ class LicitacionController extends Controller
     public function store(Request $request)
     {
         //dd($request);
-        
+
         $request->validate([
             'codigo_de_licitacion' => 'required',
             'responsable_licitacion' => 'required',
             'cuce' => 'required',
         ]);
-        
-        $request->merge(['fecha_vencimiento' => $this->licitacionUtil->uf_date($request->input('fecha_vencimiento'), time: true)]);
+
+        $request->merge([
+            'fecha_vencimiento' => $this->licitacionUtil->uf_date(
+                $request->input('fecha_vencimiento'),
+                time: true
+            ),
+        ]);
 
         Licitaciones::create($request->all());
-        return redirect()->route('index')->with('success', 'Licitacion Creada');
+        return redirect()->route('licitaciones.index')->with('success', 'Licitacion Creada');
     }
 
     /**
@@ -139,7 +149,9 @@ class LicitacionController extends Controller
         $cities = $this->licitacionUtil->tender_cities();
         $orderStatuses = $this->licitacionUtil->tender_statuses();
         $licitacion = Licitaciones::find($id);
-        return view('licitacion::create')->with(compact('licitacion','orderStatuses','cities','award_method'));
+        return view('licitacion::create')->with(
+            compact('licitacion', 'orderStatuses', 'cities', 'award_method')
+        );
     }
 
     /**
@@ -156,7 +168,7 @@ class LicitacionController extends Controller
             'cuce' => 'required',
         ]);
         $licitacion->update($request->all());
-        return redirect()->route('index')->with('success', 'Licitacion Actualizada');
+        return redirect()->route('licitaciones.index')->with('success', 'Licitacion Actualizada');
     }
 
     /**
@@ -169,11 +181,10 @@ class LicitacionController extends Controller
         $licitacion = find($id);
         $licitacion->estado = 'anulado';
         $licitacion->save();
-        
-        return redirect()->route('index')->with('success', 'Licitacion Eliminada');
+
+        return redirect()->route('licitaciones.index')->with('success', 'Licitacion Eliminada');
     }
 
-    
     /**
      * Send the datatable response for tender.
      *
@@ -181,77 +192,135 @@ class LicitacionController extends Controller
      */
     public function getDraftDatables()
     {
-            $sells = Licitaciones::all();
-            return Datatables::of($sells)
-                 ->addColumn(
-                    'action', function ($row) {
-                        $html = '<div class="btn-group">
-                                <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle" 
-                                    data-toggle="dropdown" aria-expanded="false">'.
-                                    __('messages.actions').
-                                    '<span class="caret"></span><span class="sr-only">Toggle Dropdown
+        $sells = Licitaciones::where('estado', '!=', 'anulado')->get();
+        return Datatables::of($sells)
+            ->addColumn('action', function ($row) {
+                $html =
+                    '<div class="btn-group">
+                                <button type="button" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-info tw-w-max dropdown-toggle"
+                                    data-toggle="dropdown" aria-expanded="false">' .
+                    __('messages.actions') .
+                    '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                     </span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-left" role="menu">
                                     <li>
-                                    <a href="#" data-href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'
+                                    <a href="#" data-href="' .
+                    action(
+                        [\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'show'],
+                        [$row->id]
+                    ) .
+                    '" class="btn-modal" data-container=".view_modal">
+                                        <i class="fas fa-eye" aria-hidden="true"></i>' .
+                    __('messages.view') .
+                    '
                                     </a>
                                     </li>';
 
-                        if (auth()->user()->can('draft.update') || auth()->user()->can('quotation.update')) {
-                            if ($row->is_direct_sale == 1) {
-                                $html .= '<li>
-                                            <a target="_blank" href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'edit'], [$row->id]).'">
-                                                <i class="fas fa-edit"></i>'.__('messages.edit').'
+                if (
+                    auth()->user()->can('draft.update') ||
+                    auth()->user()->can('quotation.update')
+                ) {
+                    if ($row->is_direct_sale == 1) {
+                        $html .=
+                            '<li>
+                                            <a target="_blank" href="' .
+                            action(
+                                [
+                                    \Modules\Licitacion\Http\Controllers\LicitacionController::class,
+                                    'edit',
+                                ],
+                                [$row->id]
+                            ) .
+                            '">
+                                                <i class="fas fa-edit"></i>' .
+                            __('messages.edit') .
+                            '
                                             </a>
                                         </li>';
-                            } else {
-                                $html .= '<li>
-                                            <a target="_blank" href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'edit'], [$row->id]).'">
-                                                <i class="fas fa-edit"></i>'.__('messages.edit').'
+                    } else {
+                        $html .=
+                            '<li>
+                                            <a target="_blank" href="' .
+                            action(
+                                [
+                                    \Modules\Licitacion\Http\Controllers\LicitacionController::class,
+                                    'edit',
+                                ],
+                                [$row->id]
+                            ) .
+                            '">
+                                                <i class="fas fa-edit"></i>' .
+                            __('messages.edit') .
+                            '
                                             </a>
                                         </li>';
-                            }
-                        }
+                    }
+                }
 
-                     $html .= '<li>
-                                    <a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i>'.__('messages.print').'</a>
+                $html .=
+                    '<li>
+                                    <a href="#" class="print-invoice" data-href="' .
+                    route('sell.printInvoice', [$row->id]) .
+                    '"><i class="fas fa-print" aria-hidden="true"></i>' .
+                    __('messages.print') .
+                    '</a>
                                 </li>';
 
-                     if (config('constants.enable_download_pdf')) {
-                            $sub_status = $row->sub_status == 'proforma' ? 'proforma' : '';
-                            $html .= '<li>
-                                        <a href="'.route('quotation.downloadPdf', ['id' => $row->id, 'sub_status' => $sub_status]).'" target="_blank">
-                                            <i class="fas fa-print" aria-hidden="true"></i>'.__('lang_v1.download_pdf').'
+                if (config('constants.enable_download_pdf')) {
+                    $sub_status = $row->sub_status == 'proforma' ? 'proforma' : '';
+                    $html .=
+                        '<li>
+                                        <a href="' .
+                        route('quotation.downloadPdf', [
+                            'id' => $row->id,
+                            'sub_status' => $sub_status,
+                        ]) .
+                        '" target="_blank">
+                                            <i class="fas fa-print" aria-hidden="true"></i>' .
+                        __('lang_v1.download_pdf') .
+                        '
                                         </a>
                                     </li>';
-                    }
+                }
 
-                    /* if ((auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access')) && config('constants.enable_convert_draft_to_invoice')) {
+                /* if ((auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access')) && config('constants.enable_convert_draft_to_invoice')) {
                             $html .= '<li>
                                         <a href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'convertToInvoice'], [$row->id]).'" class="convert-draft"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_invoice').'</a>
                                     </li>';
                     } */
 
-                    /* if ($row->sub_status != 'proforma') {
+                /* if ($row->sub_status != 'proforma') {
                             $html .= '<li>
                                         <a href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'convertToProforma'], [$row->id]).'" class="convert-to-proforma"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_proforma').'</a>
                                     </li>';
                      } */
 
-                    if (auth()->user()->can('draft.delete') || auth()->user()->can('quotation.delete')) {
-                        $html .= '<li>
-                                <a href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i>'.__('messages.delete').'</a>
+                if (
+                    auth()->user()->can('draft.delete') ||
+                    auth()->user()->can('quotation.delete')
+                ) {
+                    $html .=
+                        '<li>
+                                <a href="' .
+                        action(
+                            [
+                                \Modules\Licitacion\Http\Controllers\LicitacionController::class,
+                                'destroy',
+                            ],
+                            [$row->id]
+                        ) .
+                        '" class="delete-sale"><i class="fas fa-trash"></i>' .
+                        __('messages.delete') .
+                        '</a>
                                 </li>';
-                    }
+                }
 
-                    $html .= '</ul></div>';
+                $html .= '</ul></div>';
 
-                    return $html;
-                 })
+                return $html;
+            })
             ->rawColumns(['action'])
             ->make(true);
     }
-    
 }

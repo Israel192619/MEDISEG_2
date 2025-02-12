@@ -38,7 +38,7 @@
 	</div>
 @endcomponent
 @component('components.widget', ['class' => 'box-primary'])
-	@slot('tool')   
+	@slot('tool')
 		<div class="box-tools">
 
 			<a class="tw-dw-btn tw-bg-gradient-to-r tw-from-indigo-600 tw-to-blue-500 tw-font-bold tw-text-white tw-border-none tw-rounded-full pull-right"
@@ -58,14 +58,14 @@
 			<thead>
 				<tr>
                     <th>@lang('messages.action')</th>
-					<th>codigo_de_licitacion</th>
-					<th>entidad</th>
-					<th>responsable_licitacion</th>
-					<th>estado</th>
-					<th>ciudad</th>
-					<th>telefono</th>
-					<th>cuce</th>
-					<th>objeto_contratacion</th>
+					<th>Codigo_de Licitacion</th>
+					<th>Entidad</th>
+					<th>Responsable Licitacion</th>
+					<th>Estado</th>
+					<th>Ciudad</th>
+					<th>Telefono</th>
+					<th>Cuce</th>
+					<th>Objeto Contratacion</th>
 				</tr>
 			</thead>
 		</table>
@@ -88,7 +88,7 @@ $(document).ready( function(){
         $('#sell_list_filter_date_range').val('');
         sell_table.ajax.reload();
     });
-    
+
     sell_table = $('#sell_table').DataTable({
         processing: true,
         serverSide: true,
@@ -120,7 +120,7 @@ $(document).ready( function(){
             __currency_convert_recursively($('#sell_table'));
         }
     });
-    
+
     $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #created_by',  function() {
         sell_table.ajax.reload();
     });
