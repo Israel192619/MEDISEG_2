@@ -43,14 +43,14 @@ class DataController extends Controller
                             $sub->url(
                                 action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'index']),
                                 __('licitacion::lang.tender_list'),
-                                ['icon' => '', 'active' => request()->segment(1) == 'licitacion' && request()->segment(2) == '']
+                                ['icon' => '', 'active' => request()->segment(1) == 'licitacion' && request()->segment(2) == 'licitaciones' && request()->segment(3) == '']
                             );
                         }
                         if (auth()->user()->can('licitacion.create')) {
                             $sub->url(
                                 action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'create']),
                                 __('licitacion::lang.create_tender'),
-                                ['icon' => '', 'active' => request()->segment(1) == 'licitacion' && request()->segment(2) == 'create']
+                                ['icon' => '', 'active' => request()->segment(1) == 'licitacion' && request()->segment(2) == 'licitaciones' && request()->segment(3) == 'create']
                             );
                         }
                     },

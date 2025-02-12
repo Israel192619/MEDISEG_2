@@ -193,7 +193,7 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                {!! Form::label('comision_de_entrega', __('licitacion::lang.delivery_commission') . ':') !!}comision_de_entrega
+                {!! Form::label('comision_de_entrega', __('licitacion::lang.delivery_commission') . ':') !!}
                 {!! Form::number('comision_de_entrega', $licitacion->comision_de_entrega ?? null, ['class' => 'form-control',
                 'placeholder' => __('licitacion::lang.delivery_commission')]); !!}
             </div>
