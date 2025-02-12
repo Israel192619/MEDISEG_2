@@ -46,6 +46,21 @@ class LicitacionUtil extends Util
             'total' => __('licitacion::lang.total'),
         ];
     }
+    public function uf_date($date, $time = false)
+    {
+        $date_format = session('business.date_format');
+        $mysql_format = 'Y-m-d';
+        if ($time) {
+            if (session('business.time_format') == 12) {
+                $date_format = $date_format.' h:i A';
+            } else {
+                $date_format = $date_format.' H:i';
+            }
+            $mysql_format = 'Y-m-d H:i:s';
+        }
+
+        return ! empty($date_format) ? \Carbon::createFromFormat($date_format, $date)->format($mysql_format) : null;
+    }
     /* public function replaceModuleTags($business_id, $data, $job_sheet)
     {
         $id = empty($job_sheet->repair_job_sheet_id) ? $job_sheet->id : $job_sheet->repair_job_sheet_id;

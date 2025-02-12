@@ -13,10 +13,12 @@
 
 <!-- Main content -->
 <section class="content">
-    {!! Form::open([  
-        'route' => isset($licitacion) ? ['update']:['store'], 
-        'method' => isset($licitacion) ? 'put':'post',
-        'id' => 'tender_add_form']) !!}
+   {!! Form::open([  
+    'route' => isset($licitacion) ? ['licitaciones.update', $licitacion->id] : 'licitaciones.store', 
+    'method' => isset($licitacion) ? 'put' : 'post',
+    'id' => 'tender_add_form'
+    ]) !!}
+
     @component('components.widget', ['class' => 'box-primary'])
     <div class="row">
         <div class="col-sm-4">
@@ -43,13 +45,13 @@
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('estado', __('licitacion::lang.tender_status') . ':*') !!} {{-- @show_tooltip(__('tooltip.order_status')) --}}
-                {!! Form::select('estado', $orderStatuses, $licitacion->estado ?? null, ['class' => 'form-control select2','id' => 'status_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                {!! Form::select('estado',$orderStatuses, $licitacion->estado ?? null, ['class' => 'form-control select2','id' => 'status_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('ciudad', __('licitacion::lang.city') . ':*') !!}
-                {!! Form::select('ciudad', $cities, $licitacion->ciudad ?? null, ['class' => 'form-control select2','id' => 'city_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                {!! Form::select('ciudad',$cities, $licitacion->ciudad ?? null, ['class' => 'form-control select2','id' => 'city_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
             </div>
         </div>
 		<div class="col-sm-4">
@@ -130,7 +132,7 @@
             <div class="form-group">
                 {!! Form::label('presentacion_de_muestra', __('licitacion::lang.sample_provision') . ':') !!}
                 <br>
-                {!! Form::checkbox('presentacion_de_muestra', 1, $licitacion->presentacion_de_muestra ?? false, ['class' => 'input-icheck','style' => 'margin-top: 10px;']) !!}
+                {!! Form::checkbox('presentacion_de_muestra', 1, isset($licitacion) ? (bool) $licitacion->presentacion_de_muestra : false, ['class' => 'input-icheck','style' => 'margin-top: 10px;']) !!}
                 {!! Form::label('presentacion_de_muestra', __('Sí')) !!}
                 <div style="height: 20px;" class="extra-space"></div>
             </div>
@@ -316,8 +318,9 @@
             <input type="hidden" name="submit_type" id="submit_type">
             <div class="text-center">
                 <div class="btn-group">
+                    @if(!isset($licitacion))
                     <button type="submit" value="save_n_add_another" class="tw-dw-btn tw-dw-btn-lg bg-maroon submit_product_form">@lang('lang_v1.save_n_add_another')</button>
-
+                    @endif
                     <button type="submit" value="submit" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-lg tw-text-white submit_product_form">@lang('messages.save')</button>
                 </div>
 

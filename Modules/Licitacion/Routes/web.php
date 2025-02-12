@@ -20,6 +20,6 @@ Route::middleware('web', 'authh', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/install/update', [Modules\Licitacion\Http\Controllers\InstallController::class, 'update']);
 
     Route::resource('dashboard', 'Modules\Licitacion\Http\Controllers\DashboardController');
-    Route::resource('', 'Modules\Licitacion\Http\Controllers\LicitacionController');
+    Route::resource('licitaciones', 'Modules\Licitacion\Http\Controllers\LicitacionController');
     Route::get('/dataTable',[Modules\Licitacion\Http\Controllers\LicitacionController::class, 'getDraftDatables']);
 });

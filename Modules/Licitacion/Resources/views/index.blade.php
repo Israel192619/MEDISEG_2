@@ -57,6 +57,7 @@
 		<table class="table table-bordered table-striped ajax_view" id="sell_table">
 			<thead>
 				<tr>
+                    <th>@lang('messages.action')</th>
 					<th>codigo_de_licitacion</th>
 					<th>entidad</th>
 					<th>responsable_licitacion</th>
@@ -92,16 +93,20 @@ $(document).ready( function(){
         processing: true,
         serverSide: true,
         fixedHeader:false,
-        aaSorting: [[0, 'desc']],
+        aaSorting: [[1, 'desc']],
         "ajax": {
-            "url": '/dataTable',
+            "url": '/licitacion/dataTable',
         },
         columnDefs: [ {
             "targets": 7,
             "orderable": false,
             "searchable": false
         } ],
+        scrollY: "75vh",
+        scrollX: true,
+        scrollCollapse: true,
         columns: [
+            {data: 'action',name: 'action',orderable: false,"searchable": false},
             { data: 'codigo_de_licitacion', name: 'codigo_de_licitacion'  },
             { data: 'entidad', name: 'entidad'},
             { data: 'responsable_licitacion', name: 'responsable_licitacion'},
@@ -112,7 +117,7 @@ $(document).ready( function(){
             { data: 'objeto_contratacion', name: 'objeto_contratacion'}
         ],
         "fnDrawCallback": function (oSettings) {
-            __currency_convert_recursively($('#purchase_table'));
+            __currency_convert_recursively($('#sell_table'));
         }
     });
     

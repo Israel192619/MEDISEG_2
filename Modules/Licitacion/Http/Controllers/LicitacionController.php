@@ -13,6 +13,8 @@ use App\Utils\BusinessUtil;
 use App\Utils\ContactUtil;
 use Modules\Licitacion\Utils\LicitacionUtil;
 use  Modules\Licitacion\Entities\Licitaciones;
+use Yajra\DataTables\Facades\DataTables;
+
 class LicitacionController extends Controller
 {
     
@@ -109,6 +111,8 @@ class LicitacionController extends Controller
             'responsable_licitacion' => 'required',
             'cuce' => 'required',
         ]);
+        
+        $request->merge(['fecha_vencimiento' => $this->licitacionUtil->uf_date($request->input('fecha_vencimiento'), time: true)]);
 
         Licitaciones::create($request->all());
         return redirect()->route('index')->with('success', 'Licitacion Creada');
@@ -131,7 +135,11 @@ class LicitacionController extends Controller
      */
     public function edit($id)
     {
-        return view('licitacion::edit');
+        $award_method = $this->licitacionUtil->tender_award_method();
+        $cities = $this->licitacionUtil->tender_cities();
+        $orderStatuses = $this->licitacionUtil->tender_statuses();
+        $licitacion = Licitaciones::find($id);
+        return view('licitacion::create')->with(compact('licitacion','orderStatuses','cities','award_method'));
     }
 
     /**
@@ -184,9 +192,9 @@ class LicitacionController extends Controller
                                     '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                     </span>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <ul class="dropdown-menu dropdown-menu-left" role="menu">
                                     <li>
-                                    <a href="#" data-href="'.action([\Modules\Http\Controllers\LicitacionController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal">
+                                    <a href="#" data-href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'show'], [$row->id]).'" class="btn-modal" data-container=".view_modal">
                                         <i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'
                                     </a>
                                     </li>';
@@ -194,13 +202,13 @@ class LicitacionController extends Controller
                         if (auth()->user()->can('draft.update') || auth()->user()->can('quotation.update')) {
                             if ($row->is_direct_sale == 1) {
                                 $html .= '<li>
-                                            <a target="_blank" href="'.action([\Modules\Http\Controllers\LicitacionController::class, 'edit'], [$row->id]).'">
+                                            <a target="_blank" href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'edit'], [$row->id]).'">
                                                 <i class="fas fa-edit"></i>'.__('messages.edit').'
                                             </a>
                                         </li>';
                             } else {
                                 $html .= '<li>
-                                            <a target="_blank" href="'.action([\Modules\Http\Controllers\LicitacionController::class, 'edit'], [$row->id]).'">
+                                            <a target="_blank" href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'edit'], [$row->id]).'">
                                                 <i class="fas fa-edit"></i>'.__('messages.edit').'
                                             </a>
                                         </li>';
@@ -220,21 +228,21 @@ class LicitacionController extends Controller
                                     </li>';
                     }
 
-                    if ((auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access')) && config('constants.enable_convert_draft_to_invoice')) {
+                    /* if ((auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access')) && config('constants.enable_convert_draft_to_invoice')) {
                             $html .= '<li>
-                                        <a href="'.action([\Modules\Http\Controllers\LicitacionController::class, 'convertToInvoice'], [$row->id]).'" class="convert-draft"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_invoice').'</a>
+                                        <a href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'convertToInvoice'], [$row->id]).'" class="convert-draft"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_invoice').'</a>
                                     </li>';
-                    }
+                    } */
 
-                    if ($row->sub_status != 'proforma') {
+                    /* if ($row->sub_status != 'proforma') {
                             $html .= '<li>
-                                        <a href="'.action([\Modules\Http\Controllers\LicitacionController::class, 'convertToProforma'], [$row->id]).'" class="convert-to-proforma"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_proforma').'</a>
+                                        <a href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'convertToProforma'], [$row->id]).'" class="convert-to-proforma"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_proforma').'</a>
                                     </li>';
-                     }
+                     } */
 
                     if (auth()->user()->can('draft.delete') || auth()->user()->can('quotation.delete')) {
                         $html .= '<li>
-                                <a href="'.action([\Modules\Http\Controllers\LicitacionController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i>'.__('messages.delete').'</a>
+                                <a href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i>'.__('messages.delete').'</a>
                                 </li>';
                     }
 
@@ -242,7 +250,7 @@ class LicitacionController extends Controller
 
                     return $html;
                  })
-            ->rawColumns(['actions'])
+            ->rawColumns(['action'])
             ->make(true);
     }
     
