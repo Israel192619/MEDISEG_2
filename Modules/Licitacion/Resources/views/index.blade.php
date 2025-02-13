@@ -93,7 +93,7 @@ $(document).ready( function(){
         processing: true,
         serverSide: true,
         fixedHeader:false,
-        aaSorting: [[1, 'desc']],
+        aaSorting: [[1, 'asc']],
         "ajax": {
             "url": '/licitacion/dataTable',
         },
@@ -149,6 +149,7 @@ $(document).ready( function(){
                     },
                 });
             }
+            location.reload();
         });
     });
 });

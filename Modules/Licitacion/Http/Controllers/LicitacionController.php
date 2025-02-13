@@ -14,6 +14,7 @@ use App\Utils\ContactUtil;
 use Modules\Licitacion\Utils\LicitacionUtil;
 use Modules\Licitacion\Entities\Licitaciones;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class LicitacionController extends Controller
 {
@@ -71,7 +72,7 @@ class LicitacionController extends Controller
 
         $sales_representative = User::forDropdown($business_id, false, false, true);
 
-        $licitaciones = Licitaciones::get();
+        $licitaciones = Licitaciones::where('estado','!=', 'anulado')->get();
         return view('licitacion::index')->with(
             compact('licitaciones', 'business_locations', 'customers', 'sales_representative')
         );
@@ -117,15 +118,28 @@ class LicitacionController extends Controller
             'cuce' => 'required',
         ]);
 
+
         $request->merge([
             'fecha_vencimiento' => $this->licitacionUtil->uf_date(
-                $request->input('fecha_vencimiento'),
-                time: true
+                $request->input('fecha_vencimiento'), true
+            ),
+            'fecha_subida_proceso' => $this->licitacionUtil->uf_date(
+                $request->input('fecha_subida_proceso'),true
+            ),
+            'fecha_pago' => $this->licitacionUtil->uf_date(
+                $request->input('fecha_pago'),true
             ),
         ]);
 
+        $output = ['success' => 1,
+                'msg' => 'Licitacion creada',
+            ];
+
         Licitaciones::create($request->all());
-        return redirect()->route('licitaciones.index')->with('success', 'Licitacion Creada');
+        if ($request->input('submit_type') == 'save_n_add_another') {
+            return redirect()->route('licitaciones.create')->with('status', $output);
+        }
+        return redirect()->route('licitaciones.index')->with('status', $output);
     }
 
     /**
@@ -149,6 +163,9 @@ class LicitacionController extends Controller
         $cities = $this->licitacionUtil->tender_cities();
         $orderStatuses = $this->licitacionUtil->tender_statuses();
         $licitacion = Licitaciones::find($id);
+        $licitacion->fecha_vencimiento = Carbon::parse($licitacion->fecha_vencimiento)->format('m/d/y');
+        $licitacion->fecha_subida_proceso = Carbon::parse($licitacion->fecha_subida_proceso)->format('m/d/y');
+        $licitacion->	fecha_pago = Carbon::parse($licitacion->	fecha_pago)->format('m/d/y');
         return view('licitacion::create')->with(
             compact('licitacion', 'orderStatuses', 'cities', 'award_method')
         );
@@ -160,13 +177,27 @@ class LicitacionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, Licitaciones $licitacion)
-    {
+    public function update(Request $request, $id)
+    {   
         $request->validate([
             'codigo_de_licitacion' => 'required',
             'responsable_licitacion' => 'required',
             'cuce' => 'required',
         ]);
+        $licitacion = Licitaciones::findOrFail($id);
+
+        $request->merge([
+            'fecha_vencimiento' => $this->licitacionUtil->uf_date(
+                $request->input('fecha_vencimiento'), true
+            ),
+            'fecha_subida_proceso' => $this->licitacionUtil->uf_date(
+                $request->input('fecha_subida_proceso'),true
+            ),
+            'fecha_pago' => $this->licitacionUtil->uf_date(
+                $request->input('fecha_pago'),true
+            ),
+        ]);
+
         $licitacion->update($request->all());
         return redirect()->route('licitaciones.index')->with('success', 'Licitacion Actualizada');
     }
@@ -176,13 +207,21 @@ class LicitacionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function destroy($id)
+    public function destroy($id)    
     {
-        $licitacion = find($id);
-        $licitacion->estado = 'anulado';
-        $licitacion->save();
+       
 
-        return redirect()->route('licitaciones.index')->with('success', 'Licitacion Eliminada');
+        /* return redirect()->route('licitaciones.index')->with('success', 'Licitacion Eliminada'); */
+
+        if (request()->ajax()) {
+            
+            $licitacion = Licitaciones::find($id);
+            $licitacion->estado = 'anulado';
+            $licitacion->save();
+            $output['success'] = true;
+            $output['msg'] = trans('Licitacion eliminada');
+            return $output;
+        }
     }
 
     /**
@@ -241,7 +280,7 @@ class LicitacionController extends Controller
                     } else {
                         $html .=
                             '<li>
-                                            <a target="_blank" href="' .
+                                            <a href="' .
                             action(
                                 [
                                     \Modules\Licitacion\Http\Controllers\LicitacionController::class,
@@ -300,20 +339,8 @@ class LicitacionController extends Controller
                     auth()->user()->can('draft.delete') ||
                     auth()->user()->can('quotation.delete')
                 ) {
-                    $html .=
-                        '<li>
-                                <a href="' .
-                        action(
-                            [
-                                \Modules\Licitacion\Http\Controllers\LicitacionController::class,
-                                'destroy',
-                            ],
-                            [$row->id]
-                        ) .
-                        '" class="delete-sale"><i class="fas fa-trash"></i>' .
-                        __('messages.delete') .
-                        '</a>
-                                </li>';
+                    $html .='<li>
+                        <a href="'.action([\Modules\Licitacion\Http\Controllers\LicitacionController::class,'destroy',],[$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i>'.__('messages.delete').'</a></li>';
                 }
 
                 $html .= '</ul></div>';

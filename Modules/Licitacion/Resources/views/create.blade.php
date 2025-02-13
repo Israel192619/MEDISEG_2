@@ -132,7 +132,8 @@
             <div class="form-group">
                 {!! Form::label('presentacion_de_muestra', __('licitacion::lang.sample_provision') . ':') !!}
                 <br>
-                {!! Form::checkbox('presentacion_de_muestra', 1, isset($licitacion) ? (bool) $licitacion->presentacion_de_muestra : false, ['class' => 'input-icheck','style' => 'margin-top: 10px;']) !!}
+                {!! Form::hidden('presentacion_de_muestra', 0) !!}
+                {!! Form::checkbox('presentacion_de_muestra', 1, $licitacion->presentacion_de_muestra ?? false, ['class' => 'input-icheck','style' => 'margin-top: 10px;']) !!}
                 {!! Form::label('presentacion_de_muestra', __('Sí')) !!}
                 <div style="height: 20px;" class="extra-space"></div>
             </div>
@@ -206,7 +207,7 @@
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="form-group">
+            <div class="form-group hidden">
                 {!! Form::label('comisiones', __('licitacion::lang.commissions') . ':%15') !!}
                 {!! Form::number('comisiones', $licitacion->comisiones ?? null, ['class' => 'form-control','disabled', 
                 'placeholder' => __('licitacion::lang.commissions')]); !!}
@@ -235,7 +236,7 @@
         </div>
     </div>
     @endcomponent
-    @component('components.widget', ['class' => 'box-primary'])
+    @component('components.widget', ['class' => 'box-primary hidden'])
     <div class="row">
         <div class="col-sm-4">
             <div class="form-group">
@@ -303,8 +304,8 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                {!! Form::label('monto_pago', __('licitacion::lang.payment_amount') . ':*') !!} 
-                {!! Form::number('monto_pago', $licitacion->monto_pago ?? null, ['class' => 'form-control', 'required',
+                {!! Form::label('monto_pago', __('licitacion::lang.payment_amount') . ':') !!} 
+                {!! Form::number('monto_pago', $licitacion->monto_pago ?? null, ['class' => 'form-control',
                 'placeholder' => __('licitacion::lang.payment_amount')]); !!}
             </div>
         </div>
