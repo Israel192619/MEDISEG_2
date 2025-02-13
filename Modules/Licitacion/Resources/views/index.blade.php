@@ -53,8 +53,7 @@
 			</a>
 		</div>
 	@endslot
-	<div class="table-responsive">
-		<table class="table table-bordered table-striped ajax_view" id="sell_table">
+		<table class="table table-bordered table-striped ajax_view" id="sell_table" style="width: 100%;">
 			<thead>
 				<tr>
                     <th>@lang('messages.action')</th>
@@ -69,7 +68,6 @@
 				</tr>
 			</thead>
 		</table>
-	</div>
 @endcomponent
 </section>
 @stop
