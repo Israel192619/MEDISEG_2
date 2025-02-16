@@ -26,6 +26,7 @@ use App\Warranty;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Modules\Licitacion\Entities\Licitaciones;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -324,6 +325,7 @@ class SellController extends Controller
                             ->with($with)
                             ->addSelect('transactions.is_suspend', 'transactions.res_table_id', 'transactions.res_waiter_id', 'transactions.additional_notes')
                             ->get();
+
 
                 return view('sale_pos.partials.suspended_sales_modal')->with(compact('sales', 'is_tables_enabled', 'is_service_staff_enabled', 'transaction_sub_type'));
             }
@@ -751,6 +753,7 @@ class SellController extends Controller
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
         $change_return = $this->dummyPaymentLine;
+        $licitaciones = Licitaciones::select('id', 'codigo_de_licitacion')->where('estado','!=','anulado')->get();
 
         return view('sell.create')
             ->with(compact(
@@ -779,7 +782,8 @@ class SellController extends Controller
                 'is_order_request_enabled',
                 'users',
                 'default_price_group_id',
-                'change_return'
+                'change_return',
+                'licitaciones'
             ));
     }
 

@@ -240,6 +240,20 @@
 							{!! Form::text('invoice_no', null, ['class' => 'form-control', 'placeholder' => $sale_type == 'sales_order' ? __('restaurant.order_no') : __('sale.invoice_no')]); !!}
 							<p class="help-block">@lang('lang_v1.keep_blank_to_autogenerate')</p>
 						</div>
+						<div class="form-group">
+							{!! Form::label('licitacion_id', 'Licitaciones' . ':*') !!}
+							<div class="input-group">
+							<span class="input-group-addon">
+								<i class="fab fa-pushed"></i>
+							</span>
+								{!! Form::select('licitacion_id',
+                                    $licitaciones->pluck('codigo_de_licitacion', 'id'), null, ['class' => 'form-control select2', 'id' => 'licitacion_id', 'placeholder' => 'Seleciona Licitacion']); !!}
+								<span class="input-group-btn">
+								<!--button type="button" class="btn btn-default bg-white btn-flat add_new_customer" data-name=""><i class="fa fa-plus-circle text-primary fa-lg"></i></button-->
+							</span>
+							</div>
+							<small class="text-danger hide contact_due_text"><strong>@lang('account.customer_due'):</strong> <span></span></small>
+						</div>
 					</div>
 					@endcan
 				
