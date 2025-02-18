@@ -86,7 +86,9 @@ class LicitacionController extends Controller
     {
         $award_method = $this->licitacionUtil->tender_award_method();
         $cities = $this->licitacionUtil->tender_cities();
+        $resultados = $this->licitacionUtil->get_result();
         $business_id = request()->session()->get('user.business_id');
+        $months = $this->licitacionUtil->get_month();
         $walk_in_customer = $this->contactUtil->getWalkInCustomer($business_id);
         $default_datetime = $this->businessUtil->format_date('now', true);
         $orderStatuses = $this->licitacionUtil->tender_statuses();
@@ -98,7 +100,9 @@ class LicitacionController extends Controller
                 'orderStatuses',
                 'default_purchase_status',
                 'cities',
-                'award_method'
+                'award_method',
+                'months',
+                'resultados',
             )
         );
     }
@@ -161,13 +165,20 @@ class LicitacionController extends Controller
     {
         $award_method = $this->licitacionUtil->tender_award_method();
         $cities = $this->licitacionUtil->tender_cities();
+        $resultados = $this->licitacionUtil->get_result();
         $orderStatuses = $this->licitacionUtil->tender_statuses();
         $licitacion = Licitaciones::find($id);
+        $months = $this->licitacionUtil->get_month();
         $licitacion->fecha_vencimiento = Carbon::parse($licitacion->fecha_vencimiento)->format('m/d/y');
         $licitacion->fecha_subida_proceso = Carbon::parse($licitacion->fecha_subida_proceso)->format('m/d/y');
         $licitacion->	fecha_pago = Carbon::parse($licitacion->	fecha_pago)->format('m/d/y');
         return view('licitacion::create')->with(
-            compact('licitacion', 'orderStatuses', 'cities', 'award_method')
+            compact('licitacion',
+             'orderStatuses',
+                        'cities',
+                        'award_method',
+                        'months',
+                        'resultados')
         );
     }
 
@@ -199,7 +210,10 @@ class LicitacionController extends Controller
         ]);
 
         $licitacion->update($request->all());
-        return redirect()->route('licitaciones.index')->with('success', 'Licitacion Actualizada');
+        $output = ['success' => 1,
+                'msg' => 'Licitacion Actualizada',
+            ];
+        return redirect()->route('licitaciones.index')->with('status', $output);
     }
 
     /**

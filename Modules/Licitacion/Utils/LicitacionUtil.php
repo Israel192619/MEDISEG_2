@@ -43,6 +43,7 @@ class LicitacionUtil extends Util
     {
         return [
             'per_item' => __('licitacion::lang.per_item'),
+            'per_lote' => __('licitacion::lang.per_lote'),
             'total' => __('licitacion::lang.total'),
         ];
     }
@@ -60,6 +61,31 @@ class LicitacionUtil extends Util
         }
 
         return ! empty($date_format) ? \Carbon::createFromFormat($date_format, $date)->format($mysql_format) : null;
+    }
+    public function get_month()
+    {
+        return[
+            'enero' => 'Enero',
+            'febrero' => 'Febrero',
+            'marzo' => 'Marzo',
+            'abril' => 'Abril',
+            'mayo' => 'Mayo',
+            'junio' => 'Junio',
+            'julio' => 'Julio',
+            'agosto' => 'Agosto',
+            'septiembre' => 'Septiembre',
+            'octubre' => 'Octubre',
+            'noviembre' => 'Noviembre',
+            'diciembre' => 'Diciembre',
+        ];
+    }
+    public function get_result()
+    {
+        return [
+            'aceptado' => 'Aceptado',
+            'anulado' => 'Anulado',
+            'suspendida' => 'Suspendida',
+        ];
     }
     /* public function replaceModuleTags($business_id, $data, $job_sheet)
     {

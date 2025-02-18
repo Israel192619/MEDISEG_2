@@ -110,15 +110,21 @@
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('mes', __('licitacion::lang.month') . ':*') !!}
-                {!! Form::text('mes', $licitacion->mes ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.month')]); !!}
+                {!! Form::select('mes',$months, $licitacion->mes ?? null, ['class' => 'form-control select2','id' => 'month_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                {!! Form::label('hora_de_subasta', __('licitacion::lang.auction_time') . ':*') !!}
-                {!! Form::text('hora_de_subasta', $licitacion->hora_de_subasta ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.auction_time')]); !!}
+                {!! Form::label('hora_de_subasta', __('licitacion::lang.auction_time') . ':') !!}
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-clock"></i>
+                    </span>
+                    {!! Form::text('hora_de_subasta', $licitacion->hora_de_subasta ?? null, ['class' => 'form-control', 'readonly']); !!}
+                    <span class="input-group-addon">
+                        <i class="fas fa-times-circle cursor-pointer clear_hora"></i>
+                    </span>
+                </div>
             </div>
         </div>
         <div class="col-sm-4">
@@ -163,8 +169,7 @@
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('resultado', __('licitacion::lang.result') . ':*') !!}
-                {!! Form::text('resultado', $licitacion->resultado ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.result')]); !!}
+                {!! Form::select('resultado',$resultados, $licitacion->resultado ?? null, ['class' => 'form-control select2','id' => 'result_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
             </div>
         </div>
     </div>
@@ -338,14 +343,28 @@
 @section('javascript')
 
     <script type="text/javascript">
-    //console.log($('#tender_add_form')); // Verifica si el formulario existe
+
     $(document).ready(function() {
         __page_leave_confirmation('#tender_add_form');
+    });
+
+    $('#hora_de_subasta').datetimepicker({
+        format: 'LT',
+        ignoreReadonly: true,
+        widgetPositioning: {
+        vertical: 'top'
+    }
+    });
+    $(document).on('click', '.clear_hora', function() {
+        $('#hora_de_subasta').data("DateTimePicker").clear();
     });
     //
     $('#fecha_vencimiento').datetimepicker({
         format: moment_date_format + ' ' + moment_time_format,
         ignoreReadonly: true,
+        widgetPositioning: {
+        vertical: 'top'
+    }
     });
 
     $(document).on('click', '.clear_delivery_date', function() {
@@ -355,6 +374,9 @@
     $('#fecha_subida_proceso').datetimepicker({
         format: moment_date_format + ' ' + moment_time_format,
         ignoreReadonly: true,
+        widgetPositioning: {
+        vertical: 'top'
+    }
     });
 
     $(document).on('click', '.clear_process_upload_date', function() {
@@ -364,15 +386,18 @@
     $('#fecha_pago').datetimepicker({
         format: moment_date_format + ' ' + moment_time_format,
         ignoreReadonly: true,
+        widgetPositioning: {
+        vertical: 'top'
+    }
     });
 
     $(document).on('click', '.clear_payment_date', function() {
         $('#fecha_pago').data("DateTimePicker").clear();
     });
-    $('#status_id, #city_id, #award_method_id').on('select2:open', function() {
+    $('#status_id, #city_id, #award_method_id, #month_id, #result_id').on('select2:open', function() {
         $('.select2-search__field').css({
             'background-color': '#E6E6FA',
-            'color': '#000000'  // Establecer el color del texto
+            'color': '#000000'
         });
     });
 

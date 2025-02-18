@@ -58,4 +58,5 @@ return [
     //aw_method
     'per_item' => 'Por Item',
     'total' => 'Total',
+    'per_lote' => 'Por lote',
 ];
