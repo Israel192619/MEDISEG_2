@@ -23,7 +23,7 @@ use App\Utils\ModuleUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Warranty;
-use DB;
+use DB;     
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Licitacion\Entities\Licitaciones;
@@ -1691,3 +1691,5 @@ class SellController extends Controller
         exit;
     }
 }
+
+
