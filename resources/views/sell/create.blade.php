@@ -925,6 +925,15 @@
 @stop
 
 @section('javascript')
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#custom_field_1').attr('disabled', 'disabled');
+			$('#licitacion_id').change(function() {
+				var valorSeleccionado = $(this).val();
+				$('#custom_field_1').val(valorSeleccionado);
+			});
+		});
+	</script>
 	<script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/opening_stock.js?v=' . $asset_v) }}"></script>
@@ -933,6 +942,7 @@
     @if(in_array('tables' ,$enabled_modules) || in_array('modifiers' ,$enabled_modules) || in_array('service_staff' ,$enabled_modules))
     	<script src="{{ asset('js/restaurant.js?v=' . $asset_v) }}"></script>
     @endif
+
     <script type="text/javascript">
     	$(document).ready( function() {
     		$('#status').change(function(){
