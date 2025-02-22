@@ -168,8 +168,8 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                {!! Form::label('resultado', __('licitacion::lang.result') . ':*') !!}
-                {!! Form::select('resultado',$resultados, $licitacion->resultado ?? null, ['class' => 'form-control select2','id' => 'result_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                {!! Form::label('resultado', __('licitacion::lang.result') . ':') !!}
+                {!! Form::select('resultado',$resultados, $licitacion->resultado ?? null, ['class' => 'form-control select2','id' => 'result_id', 'placeholder' => __('messages.please_select')]); !!}
             </div>
         </div>
     </div>
@@ -360,7 +360,7 @@
     });
     //
     $('#fecha_vencimiento').datetimepicker({
-        format: moment_date_format + ' ' + moment_time_format,
+        format: moment_date_format,
         ignoreReadonly: true,
         widgetPositioning: {
         vertical: 'top'
@@ -372,7 +372,7 @@
     });
     //
     $('#fecha_subida_proceso').datetimepicker({
-        format: moment_date_format + ' ' + moment_time_format,
+        format: moment_date_format,
         ignoreReadonly: true,
         widgetPositioning: {
         vertical: 'top'
@@ -384,7 +384,7 @@
     });
     //
     $('#fecha_pago').datetimepicker({
-        format: moment_date_format + ' ' + moment_time_format,
+        format: moment_date_format,
         ignoreReadonly: true,
         widgetPositioning: {
         vertical: 'top'

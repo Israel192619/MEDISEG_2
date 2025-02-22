@@ -5,8 +5,8 @@
      'welcome_message' => 'Bienvenido :name',
      'total_sell' => 'Ventas totales',
      'total_purchase' => 'Compras totales', /* modified */
-     'invoice_due' => 'Factura a pagar',
-     'purchase_due' => 'Compra adeudada',
+     'invoice_due' => 'Ventas a Crédito',
+     'purchase_due' => 'Compras a Crédito',
      'today' => 'Hoy',
      'this_week' => 'Esta semana',
      'this_month' => 'Este mes',
@@ -16,7 +16,8 @@
      'total_sells' => 'Ventas totales (:currency)',
      'product_stock_alert' => 'Alerta de stock del producto',
      'payment_dues' => 'Cuota de pago',
-     'due_amount' => 'Cantidad debida',
+    //  'due_amount' => 'Cantidad debida',
+     'due_amount' => 'Monto Adeudado',
      'stock_expiry_alert' => 'Alerta de caducidad',
      'todays_profit' => 'Beneficio de hoy',
  ];

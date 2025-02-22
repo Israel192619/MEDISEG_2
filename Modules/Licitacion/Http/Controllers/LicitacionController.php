@@ -11,10 +11,16 @@ use App\User;
 use App\Contact;
 use App\Utils\BusinessUtil;
 use App\Utils\ContactUtil;
+use App\Utils\ModuleUtil;
+use App\Utils\ProductUtil;
+use App\Utils\TransactionUtil;
 use Modules\Licitacion\Utils\LicitacionUtil;
 use Modules\Licitacion\Entities\Licitaciones;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use App\TaxRate;
+use App\Transaction;
+use Spatie\Activitylog\Models\Activity;
 
 class LicitacionController extends Controller
 {
@@ -27,24 +33,24 @@ class LicitacionController extends Controller
 
     protected $licitacionUtil;
 
-    /*     protected $transactionUtil;
+    protected $transactionUtil;
 
-    protected $productUtil; */
+    protected $productUtil;
+    protected $moduleUtil;
     public function __construct(
         ContactUtil $contactUtil,
         BusinessUtil $businessUtil,
-        LicitacionUtil $licitacionUtil
+        LicitacionUtil $licitacionUtil,
+        TransactionUtil $transactionUtil, ModuleUtil $moduleUtil, ProductUtil $productUtil
     ) {
-        /* , TransactionUtil $transactionUtil, ModuleUtil $moduleUtil, ProductUtil $productUtil */
         $this->contactUtil = $contactUtil;
         $this->businessUtil = $businessUtil;
         $this->licitacionUtil = $licitacionUtil;
-        /* , $this->transactionUtil,
-        /* $this->transactionUtil = $transactionUtil;
+        $this->transactionUtil = $transactionUtil;
         $this->moduleUtil = $moduleUtil;
-        $this->productUtil = $productUtil; */
+        $this->productUtil = $productUtil;
 
-        /* $this->dummyPaymentLine = ['method' => '', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
+        $this->dummyPaymentLine = ['method' => '', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
             'is_return' => 0, 'transaction_no' => '', ];
 
         $this->shipping_status_colors = [
@@ -53,7 +59,7 @@ class LicitacionController extends Controller
             'shipped' => 'bg-navy',
             'delivered' => 'bg-green',
             'cancelled' => 'bg-red',
-        ]; */
+        ];
     }
     /**
      * Display a listing of the resource.
@@ -125,13 +131,13 @@ class LicitacionController extends Controller
 
         $request->merge([
             'fecha_vencimiento' => $this->licitacionUtil->uf_date(
-                $request->input('fecha_vencimiento'), true
+                $request->input('fecha_vencimiento'), false
             ),
             'fecha_subida_proceso' => $this->licitacionUtil->uf_date(
-                $request->input('fecha_subida_proceso'),true
+                $request->input('fecha_subida_proceso'),false
             ),
             'fecha_pago' => $this->licitacionUtil->uf_date(
-                $request->input('fecha_pago'),true
+                $request->input('fecha_pago'),false
             ),
         ]);
 
@@ -153,7 +159,15 @@ class LicitacionController extends Controller
      */
     public function show($id)
     {
-        return view('licitacion::show');
+        // if (!auth()->user()->can('sell.view') && !auth()->user()->can('direct_sell.access') && !auth()->user()->can('view_own_sell_only')) {
+        //     abort(403, 'Unauthorized action.');
+        // }
+        $licitacion = Licitaciones::findOrFail($id);       
+
+        return view('licitacion::show')
+            ->with(compact(
+                'licitacion'
+            ));
     }
 
     /**
@@ -169,9 +183,9 @@ class LicitacionController extends Controller
         $orderStatuses = $this->licitacionUtil->tender_statuses();
         $licitacion = Licitaciones::find($id);
         $months = $this->licitacionUtil->get_month();
-        $licitacion->fecha_vencimiento = Carbon::parse($licitacion->fecha_vencimiento)->format('m/d/y');
-        $licitacion->fecha_subida_proceso = Carbon::parse($licitacion->fecha_subida_proceso)->format('m/d/y');
-        $licitacion->	fecha_pago = Carbon::parse($licitacion->	fecha_pago)->format('m/d/y');
+        $licitacion->fecha_vencimiento = Carbon::parse($licitacion->fecha_vencimiento)->format(session('business.date_format'));
+        $licitacion->fecha_subida_proceso = Carbon::parse($licitacion->fecha_subida_proceso)->format(session('business.date_format'));
+        $licitacion->	fecha_pago = Carbon::parse($licitacion->	fecha_pago)->format(session('business.date_format') );
         return view('licitacion::create')->with(
             compact('licitacion',
              'orderStatuses',
@@ -199,13 +213,13 @@ class LicitacionController extends Controller
 
         $request->merge([
             'fecha_vencimiento' => $this->licitacionUtil->uf_date(
-                $request->input('fecha_vencimiento'), true
+                $request->input('fecha_vencimiento'), false
             ),
             'fecha_subida_proceso' => $this->licitacionUtil->uf_date(
-                $request->input('fecha_subida_proceso'),true
+                $request->input('fecha_subida_proceso'),false
             ),
             'fecha_pago' => $this->licitacionUtil->uf_date(
-                $request->input('fecha_pago'),true
+                $request->input('fecha_pago'),false
             ),
         ]);
 
@@ -360,6 +374,73 @@ class LicitacionController extends Controller
                 $html .= '</ul></div>';
 
                 return $html;
+            })->editColumn('estado', function ($row) {
+                if ($row->estado == 'delivered') {
+                    return 'Entregado';
+                }
+                if ($row->estado == 'lost') {
+                    return 'Perdido';
+                }
+                if ($row->estado == 'won') {
+                    return 'Ganado';
+                }
+                if ($row->estado == 'uploaded') {
+                    return 'Subido';
+                }
+                if ($row->estado == 'verified') {
+                    return 'Verificado';
+                }
+                if ($row->estado == 'pending') {
+                    return 'Espera';
+                }
+                if ($row->estado == 'canceled') {
+                    return 'Anulado';
+                }
+                return $row->estado;
+            })->editColumn('ciudad', function ($row) {
+                if ($row->ciudad == 'la_paz') {
+                    return 'La Paz';
+                }
+                if ($row->ciudad == 'oruro') {
+                    return 'Oruro';
+                }
+                if ($row->ciudad == 'potosi') {
+                    return 'Potosi';
+                }
+                if ($row->ciudad == 'cochabamba') {
+                    return 'Cochabamba';
+                }
+                if ($row->ciudad == 'chuquisaca') {
+                    return 'Chuquisaca';
+                }
+                if ($row->ciudad == 'tarija') {
+                    return 'Tarija';
+                }
+                if ($row->ciudad == 'pando') {
+                    return 'Pando';
+                }
+                if ($row->ciudad == 'beni') {
+                    return 'Beni';
+                }
+                if ($row->ciudad == 'santa_cruz') {
+                    return 'Santa Cruz';
+                }
+                if ($row->ciudad == 'sucre') {
+                    return 'Sucre';
+                }
+                return $row->ciudad;
+
+            })->editColumn('forma_de_adjudicacion', function ($row) {
+                if ($row->forma_de_adjudicacion == 'per_item') {
+                    return 'Por Item';
+                }
+                if ($row->forma_de_adjudicacion == 'per_lote') {
+                    return 'Por Lote';
+                }
+                if ($row->forma_de_adjudicacion == 'total') {
+                    return 'Total';
+                }
+                return $row->forma_de_adjudicacion;
             })
             ->rawColumns(['action'])
             ->make(true);

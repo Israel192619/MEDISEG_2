@@ -57,14 +57,23 @@
 			<thead>
 				<tr>
                     <th>@lang('messages.action')</th>
-					<th>Codigo_de Licitacion</th>
+					<th>Codigo de Licitacion</th>
 					<th>Entidad</th>
 					<th>Responsable Licitacion</th>
 					<th>Estado</th>
 					<th>Ciudad</th>
-					<th>Telefono</th>
+					{{-- <th>Telefono</th> --}}
 					<th>Cuce</th>
 					<th>Objeto Contratacion</th>
+
+					<th>Forma de adjudicacion</th>
+					<th>Fecha de vencimiento</th>
+					<th>Mes</th>
+					<th>Hora de subasta</th>
+					<th>Garantias solicitadas</th>
+					<th>direccion de muestra</th>
+					<th>fecha subida de proceso</th>
+					<th>Resultado</th>
 				</tr>
 			</thead>
 		</table>
@@ -94,6 +103,9 @@ $(document).ready( function(){
         aaSorting: [[1, 'asc']],
         "ajax": {
             "url": '/licitacion/dataTable',
+            /* success: function (response) {
+        console.log("Respuesta del servidor:", response);
+    }, */
         },
         columnDefs: [ {
             "targets": 7,
@@ -110,9 +122,17 @@ $(document).ready( function(){
             { data: 'responsable_licitacion', name: 'responsable_licitacion'},
             { data: 'estado', name: 'estado'},
             { data: 'ciudad', name: 'ciudad'},
-            { data: 'telefono', name: 'telefono'},
+            /* { data: 'telefono', name: 'telefono'}, */
             { data: 'cuce', name: 'cuce'},
-            { data: 'objeto_contratacion', name: 'objeto_contratacion'}
+            { data: 'objeto_contratacion', name: 'objeto_contratacion'},
+            { data: 'forma_de_adjudicacion', name: 'forma_de_adjudicacion'},
+            { data: 'fecha_vencimiento', name: 'fecha_vencimiento'},
+            { data: 'mes', name: 'mes'},
+            { data: 'hora_de_subasta', name: 'hora_de_subasta'},
+            { data: 'garantias_solicitadas', name: 'garantias_solicitadas'},
+            { data: 'direccion_de_muestra', name: 'direccion_de_muestra'},
+            { data: 'fecha_subida_proceso', name: 'fecha_subida_proceso'},
+            { data: 'resultado', name: 'resultado'},
         ],
         "fnDrawCallback": function (oSettings) {
             __currency_convert_recursively($('#sell_table'));

@@ -1034,6 +1034,29 @@
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
     @includeIf('sales_order.common_js')
     @includeIf('purchase_order.common_js')
+    <script>
+        Highcharts.setOptions({
+            lang: {
+                contextButtonTitle: "Menú contextual",
+                downloadJPEG: "Descargar imagen JPEG",
+                downloadPDF: "Descargar documento PDF",
+                downloadPNG: "Descargar imagen PNG",
+                downloadSVG: "Descargar Imagen Vector SVG",
+                drillUpText: "Volver a {series.name}",
+                loading: "Cargando...",
+                months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                noData: "No hay datos disponibles",
+                printChart: "Imprimir gráfico",
+                resetZoom: "Restablecer zoom",
+                resetZoomTitle: "Restablecer zoom a 1:1",
+                shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                weekdays: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+                viewFullscreen: "Ver en pantalla completa",  // Traducción de "View in full screen"
+                exitFullscreen: "Salir de pantalla completa"  // Traducción de "Exit full screen"
+            }
+        });
+    </script>
+    
     @if (!empty($all_locations))
         {!! $sells_chart_1->script() !!}
         {!! $sells_chart_2->script() !!}
