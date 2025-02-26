@@ -162,11 +162,85 @@ class LicitacionController extends Controller
         // if (!auth()->user()->can('sell.view') && !auth()->user()->can('direct_sell.access') && !auth()->user()->can('view_own_sell_only')) {
         //     abort(403, 'Unauthorized action.');
         // }
+        $business_id = request()->session()->get('user.business_id');
+        $taxes = TaxRate::where('business_id', $business_id)
+                            ->pluck('name', 'id');
+        $query = Transaction::where('business_id', $business_id)
+                    ->where('custom_field_1', $id)
+                    ->with(['contact', 'delivery_person_user', 'sell_lines' => function ($q) {
+                        $q->whereNull('parent_sell_line_id');
+                    }, 'sell_lines.product', 'sell_lines.product.unit', 'sell_lines.product.second_unit', 'sell_lines.variations', 'sell_lines.variations.product_variation', 'payment_lines', 'sell_lines.modifiers', 'sell_lines.lot_details', 'tax', 'sell_lines.sub_unit', 'table', 'service_staff', 'sell_lines.service_staff', 'types_of_service', 'sell_lines.warranties', 'media']);
+
+        if (! auth()->user()->can('sell.view') && ! auth()->user()->can('direct_sell.access') && auth()->user()->can('view_own_sell_only')) {
+            $query->where('transactions.created_by', request()->session()->get('user.id'));
+        }
+
+        $sell = $query->firstOrFail();
+
+        $activities = Activity::forSubject($sell)
+           ->with(['causer', 'subject'])
+           ->latest()
+           ->get();
+
+        $line_taxes = [];
+        foreach ($sell->sell_lines as $key => $value) {
+            if (! empty($value->sub_unit_id)) {
+                $formated_sell_line = $this->transactionUtil->recalculateSellLineTotals($business_id, $value);
+                $sell->sell_lines[$key] = $formated_sell_line;
+            }
+
+            if (! empty($taxes[$value->tax_id])) {
+                if (isset($line_taxes[$taxes[$value->tax_id]])) {
+                    $line_taxes[$taxes[$value->tax_id]] += ($value->item_tax * $value->quantity);
+                } else {
+                    $line_taxes[$taxes[$value->tax_id]] = ($value->item_tax * $value->quantity);
+                }
+            }
+        }
+
+        $payment_types = $this->transactionUtil->payment_types($sell->location_id, true);
+        $order_taxes = [];
+        if (! empty($sell->tax)) {
+            if ($sell->tax->is_tax_group) {
+                $order_taxes = $this->transactionUtil->sumGroupTaxDetails($this->transactionUtil->groupTaxDetails($sell->tax, $sell->tax_amount));
+            } else {
+                $order_taxes[$sell->tax->name] = $sell->tax_amount;
+            }
+        }
+
+        $business_details = $this->businessUtil->getDetails($business_id);
+        $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
+        $shipping_statuses = $this->transactionUtil->shipping_statuses();
+        $shipping_status_colors = $this->shipping_status_colors;
+        $common_settings = session()->get('business.common_settings');
+        $is_warranty_enabled = ! empty($common_settings['enable_product_warranty']) ? true : false;
+
+        $statuses = Transaction::sell_statuses();
+
+        if ($sell->type == 'sales_order') {
+            $sales_order_statuses = Transaction::sales_order_statuses(true);
+            $statuses = array_merge($statuses, $sales_order_statuses);
+        }
+        $status_color_in_activity = Transaction::sales_order_statuses();
+        $sales_orders = $sell->salesOrders();
         $licitacion = Licitaciones::findOrFail($id);       
 
         return view('licitacion::show')
             ->with(compact(
-                'licitacion'
+                'licitacion',
+                'taxes',
+                'sell',
+                'payment_types',
+                'order_taxes',
+                'pos_settings',
+                'shipping_statuses',
+                'shipping_status_colors',
+                'is_warranty_enabled',
+                'activities',
+                'statuses',
+                'status_color_in_activity',
+                'sales_orders',
+                'line_taxes'
             ));
     }
 
@@ -211,6 +285,9 @@ class LicitacionController extends Controller
         ]);
         $licitacion = Licitaciones::findOrFail($id);
 
+        
+        $gastosOperativos = $request->envio_productos + $request->envio_documentacion + $request->muestras + $request->comision_de_entrega + $request->otros_gastos_de_entrega + $licitacion->comisiones + $request->gastos_poliza + $request->solvencia_fiscal + $request->poliza;
+
         $request->merge([
             'fecha_vencimiento' => $this->licitacionUtil->uf_date(
                 $request->input('fecha_vencimiento'), false
@@ -221,6 +298,7 @@ class LicitacionController extends Controller
             'fecha_pago' => $this->licitacionUtil->uf_date(
                 $request->input('fecha_pago'),false
             ),
+            'gastos_opertivos' => $gastosOperativos
         ]);
 
         $licitacion->update($request->all());

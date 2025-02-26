@@ -17,17 +17,17 @@
       <div class="col-sm-4">
         <b>Codigo licitación: </b>{{ $licitacion->codigo_de_licitacion }}<br>
         <b>Entidad: </b>{{ $licitacion->entidad }}<br>
-        <b>Estado: </b>{{ $licitacion->estado }}<br>
-        <b>Ciudad: </b>{{ $licitacion->ciudad }}<br>
+        <b>Estado: </b>{{ __('licitacion::lang.'.$licitacion->estado) }}<br>
+        <b>Ciudad: </b>{{ __('licitacion::lang.'.$licitacion->ciudad) }}<br>
         <b>Telefono: </b>{{ $licitacion->telefono }}<br>
-        <b>Cuce: </b>{{ $licitacion->cuse }}<br>
+        <b>Cuce: </b>{{ $licitacion->cuce }}<br>
 
       </div>
       <div class="col-sm-4">
         <b>Objeto de contratacion: </b>{{ $licitacion->objeto_contratacion }}<br>
         <b>Tipo de proceso: </b>{{ $licitacion->tipo_de_proceso }}<br>
-        <b>Forma de adjudicacion: </b>{{ $licitacion->forma_de_adjudicacion }}<br>
-        <b>Fecha de vencimiento: </b>{{ $licitacion->fecha_vencimiento }}<br>
+        <b>Forma de adjudicacion: </b>{{ __('licitacion::lang.'.$licitacion->forma_de_adjudicacion) }}<br>
+        <b>Fecha de vencimiento: </b>{{ @format_date($licitacion->fecha_vencimiento) }}<br>
         <b>Mes: </b>{{ $licitacion->mes }}<br>
         <b>Hora de subasta: </b>{{ $licitacion->hora_de_subasta }}<br>
       </div>
@@ -40,134 +40,9 @@
         {{ 'No' }}
         @endif<br>
         <b>Dirección de muestra: </b>{{ $licitacion->direccion_de_muestra }}<br>
-        <b>Fecha subida proceso: </b>{{ $licitacion->fecha_subida_proceso }}<br>
+        <b>Fecha subida proceso: </b>{{ @format_date($licitacion->fecha_subida_proceso) }}<br>
         <b>Resultado: </b>{{ $licitacion->resultado }}<br>
       </div>
-      {{-- <div class="@if(!empty($export_custom_fields)) col-sm-3 @else col-sm-4 @endif">
-        @if(!empty($sell->contact->supplier_business_name))
-          {{ $sell->contact->supplier_business_name }}<br>
-        @endif
-        <b>{{ __('sale.customer_name') }}:</b> {{ $sell->contact->name }}<br>
-        <b>{{ __('business.address') }}:</b><br>
-        @if(!empty($sell->billing_address()))
-          {{$sell->billing_address()}}
-        @else
-          {!! $sell->contact->contact_address !!}
-          @if($sell->contact->mobile)
-          <br>
-              {{__('contact.mobile')}}: {{ $sell->contact->mobile }}
-          @endif
-          @if($sell->contact->alternate_number)
-          <br>
-              {{__('contact.alternate_contact_number')}}: {{ $sell->contact->alternate_number }}
-          @endif
-          @if($sell->contact->landline)
-            <br>
-              {{__('contact.landline')}}: {{ $sell->contact->landline }}
-          @endif
-          @if($sell->contact->email)
-            <br>
-              {{__('business.email')}}: {{ $sell->contact->email }}
-          @endif
-        @endif
-        
-      </div> --}}
-      {{-- <div class="@if(!empty($export_custom_fields)) col-sm-3 @else col-sm-4 @endif">
-      @if(in_array('tables' ,$enabled_modules))
-         <strong>@lang('restaurant.table'):</strong>
-          {{$sell->table->name ?? ''}}<br>
-      @endif
-      @if(in_array('service_staff' ,$enabled_modules))
-          <strong>@lang('restaurant.service_staff'):</strong>
-          {{$sell->service_staff->user_full_name ?? ''}}<br>
-      @endif
-
-      <strong>@lang('sale.shipping'):</strong>
-      <span class="label @if(!empty($shipping_status_colors[$sell->shipping_status])) {{$shipping_status_colors[$sell->shipping_status]}} @else {{'bg-gray'}} @endif">{{$shipping_statuses[$sell->shipping_status] ?? '' }}</span><br>
-      @if(!empty($sell->shipping_address()))
-        {{$sell->shipping_address()}}
-      @else
-        {{$sell->shipping_address ?? '--'}}
-      @endif
-      @if(!empty($sell->delivered_to))
-        <br><strong>@lang('lang_v1.delivered_to'): </strong> {{$sell->delivered_to}}
-      @endif
-
-      @if(!empty($sell->delivery_person_user->first_name))
-        <br><strong>@lang('lang_v1.delivery_person'): </strong> {{$sell->delivery_person_user->surname}} {{$sell->delivery_person_user->first_name}}     {{$sell->delivery_person_user->last_name}}
-      @endif
-
-      
-      @if(!empty($sell->shipping_custom_field_1))
-        <br><strong>{{$custom_labels['shipping']['custom_field_1'] ?? ''}}: </strong> {{$sell->shipping_custom_field_1}}
-      @endif
-      @if(!empty($sell->shipping_custom_field_2))
-        <br><strong>{{$custom_labels['shipping']['custom_field_2'] ?? ''}}: </strong> {{$sell->shipping_custom_field_2}}
-      @endif
-      @if(!empty($sell->shipping_custom_field_3))
-        <br><strong>{{$custom_labels['shipping']['custom_field_3'] ?? ''}}: </strong> {{$sell->shipping_custom_field_3}}
-      @endif
-      @if(!empty($sell->shipping_custom_field_4))
-        <br><strong>{{$custom_labels['shipping']['custom_field_4'] ?? ''}}: </strong> {{$sell->shipping_custom_field_4}}
-      @endif
-      @if(!empty($sell->shipping_custom_field_5))
-        <br><strong>{{$custom_labels['shipping']['custom_field_5'] ?? ''}}: </strong> {{$sell->shipping_custom_field_5}}
-      @endif
-      @php
-        $medias = $sell->media->where('model_media_type', 'shipping_document')->all();
-      @endphp
-      @if(count($medias))
-        @include('sell.partials.media_table', ['medias' => $medias])
-      @endif
-
-      @if(in_array('types_of_service' ,$enabled_modules))
-        @if(!empty($sell->types_of_service))
-          <strong>@lang('lang_v1.types_of_service'):</strong>
-          {{$sell->types_of_service->name}}<br>
-        @endif
-        @if(!empty($sell->types_of_service->enable_custom_fields))
-          <strong>{{ $custom_labels['types_of_service']['custom_field_1'] ?? __('lang_v1.service_custom_field_1' )}}:</strong>
-          {{$sell->service_custom_field_1}}<br>
-          <strong>{{ $custom_labels['types_of_service']['custom_field_2'] ?? __('lang_v1.service_custom_field_2' )}}:</strong>
-          {{$sell->service_custom_field_2}}<br>
-          <strong>{{ $custom_labels['types_of_service']['custom_field_3'] ?? __('lang_v1.service_custom_field_3' )}}:</strong>
-          {{$sell->service_custom_field_3}}<br>
-          <strong>{{ $custom_labels['types_of_service']['custom_field_4'] ?? __('lang_v1.service_custom_field_4' )}}:</strong>
-          {{$sell->service_custom_field_4}}<br>
-          <strong>{{ $custom_labels['types_of_service']['custom_field_5'] ?? __('lang_v1.custom_field', ['number' => 5])}}:</strong>
-          {{$sell->service_custom_field_5}}<br>
-          <strong>{{ $custom_labels['types_of_service']['custom_field_6'] ?? __('lang_v1.custom_field', ['number' => 6])}}:</strong>
-          {{$sell->service_custom_field_6}}
-        @endif
-      @endif
-      </div> --}}
-      {{-- @if(!empty($export_custom_fields))
-          <div class="col-sm-3">
-                @foreach($export_custom_fields as $label => $value)
-                    <strong>
-                        @php
-                            $export_label = __('lang_v1.export_custom_field1');
-                            if ($label == 'export_custom_field_1') {
-                                $export_label =__('lang_v1.export_custom_field1');
-                            } elseif ($label == 'export_custom_field_2') {
-                                $export_label = __('lang_v1.export_custom_field2');
-                            } elseif ($label == 'export_custom_field_3') {
-                                $export_label = __('lang_v1.export_custom_field3');
-                            } elseif ($label == 'export_custom_field_4') {
-                                $export_label = __('lang_v1.export_custom_field4');
-                            } elseif ($label == 'export_custom_field_5') {
-                                $export_label = __('lang_v1.export_custom_field5');
-                            } elseif ($label == 'export_custom_field_6') {
-                                $export_label = __('lang_v1.export_custom_field6');
-                            }
-                        @endphp
-
-                        {{$export_label}}
-                        :
-                    </strong> {{$value ?? ''}} <br>
-                @endforeach
-          </div>
-      @endif --}}
     </div>
     <br>
     <div class="row">
@@ -177,12 +52,12 @@
 
       <div class="col-sm-12 col-xs-12">
         <div class="table-responsive">
-          {{-- @include('sale_pos.partials.sale_line_details') --}}
+          @include('sale_pos.partials.sale_line_details')
         </div>
       </div>
     </div>
-    <div class="row">
-      {{-- @php
+{{--     <div class="row">
+      @php
         $total_paid = 0;
       @endphp
       @if($sell->type != 'sales_order')
@@ -353,6 +228,46 @@
       </div>
     </div> --}}
     <div class="row">
+      <div class="col-md-6 col-sm-12 col-xs-12 @if($sell->type == 'sales_order') col-md-offset-6 @endif">
+        <div class="table-responsive">
+          <table class="table bg-gray">
+            <tr>
+              <th>Comisiones: </th>
+              <td>{{ $licitacion->comisiones }}</td>
+            </tr>
+            <tr>
+              <th>Precio de venta: </th>
+              <td>{{ $licitacion->precio_venta }}</td>
+            </tr>
+            <tr>
+              <th>Inversión: </th>
+              <td>{{ $licitacion->inversion }}</td>
+            </tr>
+            <tr>
+              <th>Gastos operativos: </th>
+              <td>{{ $licitacion->gastos_opertivos }}</td>
+            </tr>
+            <tr>
+              <th>Impuestos: </th>
+              <td>{{ $licitacion->impuestos }}</td>
+            </tr>
+            <tr>
+              <th>Gastos administrativos: </th>
+              <td>{{ $licitacion->gastos_administrativos }}</td>
+            </tr>
+            <tr>
+              <th>Comisión: </th>
+              <td>{{ $licitacion->comision }}</td>
+            </tr>
+            <tr>
+              <th>Utilidad: </th>
+              <td>{{ $licitacion->utilidad }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-sm-6">
        {{--  <strong>{{ __( 'sale.sell_note')}}:</strong><br>
         <p class="well well-sm no-shadow bg-gray">
@@ -381,15 +296,15 @@
         </div>
     </div>
   </div>
-  {{-- <div class="modal-footer">
-    @if($sell->type != 'sales_order')
+  <div class="modal-footer">
+    {{-- @if($sell->type != 'sales_order')
     <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-success tw-text-white" data-href="{{route('sell.printInvoice', [$licitacion->id])}}?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> @lang("lang_v1.packing_slip")</a>
     @endif
     @can('print_invoice')
       <a href="#" class="print-invoice tw-dw-btn tw-dw-btn-primary tw-text-white" data-href="{{route('sell.printInvoice', [$licitacion->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("lang_v1.print_invoice")</a>
-    @endcan
+    @endcan --}}
       <button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-text-white no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
-    </div> --}}
+    </div>
   </div>
 </div>
 

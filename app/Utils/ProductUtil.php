@@ -1722,7 +1722,8 @@ class ProductUtil extends Util
                 'VLD.qty_available',
                 'variations.sell_price_inc_tax as selling_price',
                 'variations.sub_sku',
-                'U.short_name as unit'
+                'U.short_name as unit',
+                'variations.dpp_inc_tax'
             );
 
         if (! empty($price_group_id)) {

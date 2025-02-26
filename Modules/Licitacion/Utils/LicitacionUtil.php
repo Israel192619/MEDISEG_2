@@ -6,6 +6,7 @@ use App\Business;
 use App\Charts\CommonChart;
 use App\Utils\Util;
 use DB;
+use Modules\Licitacion\Entities\impuestosLicitacion;
 use Modules\Licitacion\Entities\JobSheet;
 use Modules\Licitacion\Notifications\LicitacionStatusUpdated;
 use Notification;

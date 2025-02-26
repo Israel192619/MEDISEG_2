@@ -350,6 +350,10 @@
 				$pos_unit_price = $so_line->unit_price_before_discount;
 			}
 		@endphp
+		{{-- Añadido recientemente precio de compra --}}
+		<td>{{ @num_format($product->last_purchased_price) }}</td>
+		<input type="hidden" name="products[{{$row_count}}][last_purchased_price]" value="{{ @num_format($product->last_purchased_price) }}">
+		{{-- end precio compra --}}
 		<td class="@if(!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif">
 			<input type="text" name="products[{{$row_count}}][unit_price]" class="form-control pos_unit_price input_number mousetrap" value="{{@num_format($pos_unit_price)}}" @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$pos_unit_price}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($pos_unit_price)])}}" @endif> 
 

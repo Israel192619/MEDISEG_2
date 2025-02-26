@@ -179,63 +179,63 @@
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('envio_productos', __('licitacion::lang.product_shipment') . ':*') !!}
-                {!! Form::number('envio_productos', $licitacion->envio_productos ?? null, ['class' => 'form-control', 'required',
+                {!! Form::number('envio_productos', $licitacion->envio_productos ?? 0.00, ['class' => 'form-control', 'required',
                 'placeholder' => __('licitacion::lang.product_shipment')]); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('envio_documentacion', __('licitacion::lang.documentation_shipment') . ':*') !!}
-                {!! Form::number('envio_documentacion', $licitacion->envio_documentacion ?? null, ['class' => 'form-control', 'required',
+                {!! Form::number('envio_documentacion', $licitacion->envio_documentacion ?? 0.00, ['class' => 'form-control', 'required',
                 'placeholder' => __('licitacion::lang.documentation_shipment')]); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('muestras', __('licitacion::lang.samples') . ':*') !!}
-                {!! Form::number('muestras', $licitacion->muestras ?? null, ['class' => 'form-control', 'required',
+                {!! Form::number('muestras', $licitacion->muestras ?? 0, ['class' => 'form-control', 'required',
                 'placeholder' => __('licitacion::lang.samples')]); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('comision_de_entrega', __('licitacion::lang.delivery_commission') . ':') !!}
-                {!! Form::number('comision_de_entrega', $licitacion->comision_de_entrega ?? null, ['class' => 'form-control',
+                {!! Form::number('comision_de_entrega', $licitacion->comision_de_entrega ?? 0, ['class' => 'form-control',
                 'placeholder' => __('licitacion::lang.delivery_commission')]); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('otros_gastos_de_entrega', __('licitacion::lang.other_delivery_costs') . ':') !!}
-                {!! Form::number('otros_gastos_de_entrega', $licitacion->otros_gastos_de_entrega ?? null, ['class' => 'form-control',
+                {!! Form::number('otros_gastos_de_entrega', $licitacion->otros_gastos_de_entrega ?? 0, ['class' => 'form-control',
                 'placeholder' => __('licitacion::lang.other_delivery_costs')]); !!}
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="form-group hidden">
-                {!! Form::label('comisiones', __('licitacion::lang.commissions') . ':%15') !!}
-                {!! Form::number('comisiones', $licitacion->comisiones ?? null, ['class' => 'form-control','disabled', 
+        <div class="col-sm-4 hidden">
+            <div class="form-group">
+                {!! Form::label('comisiones', __('licitacion::lang.commissions') . ':') !!}
+                {!! Form::number('comisiones', $licitacion->comisiones ?? 0, ['class' => 'form-control','disabled', 
                 'placeholder' => __('licitacion::lang.commissions')]); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('gastos_poliza', __('licitacion::lang.policy_expenses') . ':*') !!}
-                {!! Form::number('gastos_poliza', $licitacion->gastos_poliza ?? null, ['class' => 'form-control', 'required',
+                {!! Form::number('gastos_poliza', $licitacion->gastos_poliza ?? 0, ['class' => 'form-control', 'required',
                 'placeholder' => __('licitacion::lang.policy_expenses')]); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('solvencia_fiscal', __('licitacion::lang.tax_solvency') . ':*') !!}
-                {!! Form::number('solvencia_fiscal', $licitacion->solvencia_fiscal ?? null, ['class' => 'form-control', 'required',
+                {!! Form::number('solvencia_fiscal', $licitacion->solvencia_fiscal ?? 0, ['class' => 'form-control', 'required',
                 'placeholder' => __('licitacion::lang.tax_solvency')]); !!}
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('poliza', __('licitacion::lang.policy') . ':*') !!}
-                {!! Form::number('poliza', $licitacion->poliza ?? null, ['class' => 'form-control', 'required',
+                {!! Form::number('poliza', $licitacion->poliza ?? 0, ['class' => 'form-control', 'required',
                 'placeholder' => __('licitacion::lang.policy')]); !!}
             </div>
         </div>

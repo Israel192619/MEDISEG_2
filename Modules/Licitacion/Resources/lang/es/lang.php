@@ -59,4 +59,21 @@ return [
     'per_item' => 'Por Item',
     'total' => 'Total',
     'per_lote' => 'Por lote',
+
+    //departamentos
+    'la_paz' => 'La Paz',
+    'oruro' => 'Oruro',
+    'potosi' => 'Potosi',
+    'cochabamba' => 'Cochabamba',
+    'chuquisaca' => 'Chuquisaca',
+    'sucre' => 'Sucre',
+    'tarija' => 'Tarija',
+    'beni' => 'Beni',
+    'pando' => 'Pando',
+    'santa_cruz' => 'Santa Cruz',
+
+    //Impuestos
+    'impuestos' => 'Impuestos',
+    'editar_impuestos' => 'Editar impuestos',
+    'administra_tus_impuestos' =>'Administra tus impuestos, comisiones, gastos administrativos'
 ];

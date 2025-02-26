@@ -753,7 +753,12 @@ class SellController extends Controller
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
         $change_return = $this->dummyPaymentLine;
-        $licitaciones = Licitaciones::select('id', 'codigo_de_licitacion')->where('estado','!=','anulado')->get();
+        /* $licitaciones = Licitaciones::select('id', 'codigo_de_licitacion')->where('estado','!=','anulado')->get(); */
+        $licitaciones = Licitaciones::select('licitaciones.id', 'licitaciones.codigo_de_licitacion')
+        ->leftJoin('transactions', 'licitaciones.id', '=', 'transactions.custom_field_1')
+        ->where('licitaciones.estado', '!=', 'anulado')
+        ->whereNull('transactions.custom_field_1')
+        ->get();
 
         return view('sell.create')
             ->with(compact(
@@ -970,6 +975,7 @@ class SellController extends Controller
                             'pv.is_dummy as is_dummy',
                             'variations.name as variation_name',
                             'variations.sub_sku',
+                            'variations.dpp_inc_tax as last_purchased_price',  //agregado
                             'p.barcode_type',
                             'p.enable_sr_no',
                             'variations.id as variation_id',

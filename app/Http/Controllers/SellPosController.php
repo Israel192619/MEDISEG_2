@@ -63,6 +63,9 @@ use Stripe\Charge;
 use Stripe\Stripe;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\SellCreatedOrModified;
+use Modules\Licitacion\Utils\LicitacionUtil;
+use Modules\Licitacion\Entities\Licitaciones;
+use Modules\Licitacion\Entities\impuestosLicitacion;
 
 class SellPosController extends Controller
 {
@@ -83,6 +86,8 @@ class SellPosController extends Controller
 
     protected $notificationUtil;
 
+    protected $licitacionUtil;
+
     /**
      * Constructor
      *
@@ -96,7 +101,8 @@ class SellPosController extends Controller
         TransactionUtil $transactionUtil,
         CashRegisterUtil $cashRegisterUtil,
         ModuleUtil $moduleUtil,
-        NotificationUtil $notificationUtil
+        NotificationUtil $notificationUtil,
+        LicitacionUtil $licitacionUtil,
     ) {
         $this->contactUtil = $contactUtil;
         $this->productUtil = $productUtil;
@@ -105,6 +111,7 @@ class SellPosController extends Controller
         $this->cashRegisterUtil = $cashRegisterUtil;
         $this->moduleUtil = $moduleUtil;
         $this->notificationUtil = $notificationUtil;
+        $this->licitacionUtil = $licitacionUtil;
 
         $this->dummyPaymentLine = ['method' => 'cash', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
             'is_return' => 0, 'transaction_no' => ''];
@@ -305,6 +312,7 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request);
         if (!auth()->user()->can('sell.create') && !auth()->user()->can('direct_sell.access') && !auth()->user()->can('so.create')) {
             abort(403, 'Unauthorized action.');
         }
@@ -480,6 +488,7 @@ class SellPosController extends Controller
                 //upload document
                 $input['document'] = $this->transactionUtil->uploadFile($request, 'sell_document', 'documents');
 
+                //Se crea la transaccion
                 $transaction = $this->transactionUtil->createSellTransaction($business_id, $input, $invoice_total, $user_id);
 
                 //Upload Shipping documents
@@ -581,6 +590,41 @@ class SellPosController extends Controller
 
                     //Auto send notification
                     $whatsapp_link = $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
+                }
+
+                //licitacion
+                if(!empty($request->input('licitacion_id'))){
+                    $products = $request->input('products');
+                    $total_amount_inversion = 0;
+                    foreach ($products as $product) {
+                        $total_price = $product['last_purchased_price'] * $product['quantity'];
+                        $total_amount_inversion += $total_price;
+                    }
+                    $comisionImpuesto = impuestosLicitacion::first();
+                    $licitacion = Licitaciones::find($request->input('licitacion_id'));
+                    $comisiones = $transaction->total_before_tax * ($comisionImpuesto->porcentaje_comisiones/100);
+                    $impuesto = $transaction->total_before_tax * ($comisionImpuesto->porcentaje_impuesto/100);
+                    $gastosAdministrativos = $transaction->total_before_tax * ($comisionImpuesto->porcentaje_gastos_administrativos/100);
+
+                    $envioProductos = $licitacion->envio_productos;
+                    $envioDocumentacion = $licitacion->envio_documentacion;
+                    $muestras = $licitacion->muestras;
+                    $comisionEntrega = $licitacion->comision_de_entrega;
+                    $otrosGastosEentrega = $licitacion->otros_gastos_de_entrega;
+                    $gastosPoliza = $licitacion->gastos_poliza;
+                    $solvenciaFiscal = $licitacion->solvencia_fiscal;
+                    $poliza = $licitacion->poliza;
+                    $gastosOperativos = $envioProductos + $envioDocumentacion + $muestras + $comisionEntrega + $otrosGastosEentrega + $gastosPoliza + $solvenciaFiscal + $poliza + $comisiones;
+                    $utilidad =  $transaction->total_before_tax - $total_amount_inversion - $gastosOperativos - $impuesto - $gastosOperativos;
+                    $comisionLicitacion = $utilidad * ($comisionImpuesto->porcentaje_comision/100);
+                    $licitacion->update(['comisiones' => $comisiones,
+                                                    'impuestos' => $impuesto,
+                                                'gastos_administrativos' => $gastosAdministrativos,
+                                            'gastos_opertivos' => $gastosOperativos,
+                                            'precio_venta' => $transaction->total_before_tax,
+                                            'inversion'=> $total_amount_inversion,
+                                            'utilidad' => $utilidad,
+                                            'comision' => $comisionLicitacion]);
                 }
 
                 if (!empty($transaction->sales_order_ids)) {
@@ -1099,6 +1143,7 @@ class SellPosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //dd($request);
         if (!auth()->user()->can('sell.update') && !auth()->user()->can('direct_sell.access') &&
             !auth()->user()->can('so.update') && !auth()->user()->can('edit_pos_payment')) {
             abort(403, 'Unauthorized action.');
@@ -1286,6 +1331,43 @@ class SellPosController extends Controller
                 DB::beginTransaction();
 
                 $transaction = $this->transactionUtil->updateSellTransaction($id, $business_id, $input, $invoice_total, $user_id);
+
+                //licitacion
+                if(!empty($request->input('custom_field_1'))){
+                    $products = $request->input('products');
+                    $total_amount_inversion = 0;
+                    foreach ($products as $product) {
+                        $total_price = $product['last_purchased_price'] * $product['quantity'];
+                        $total_amount_inversion += $total_price;
+                    }
+                    $comisionImpuesto = impuestosLicitacion::first();
+                    $licitacion = Licitaciones::find($request->input('custom_field_1'));
+                    $comisiones = $transaction->total_before_tax * ($comisionImpuesto->porcentaje_comisiones/100);
+                    $impuesto = $transaction->total_before_tax * ($comisionImpuesto->porcentaje_impuesto/100);
+                    $gastosAdministrativos = $transaction->total_before_tax * ($comisionImpuesto->porcentaje_gastos_administrativos/100);
+
+                    $envioProductos = $licitacion->envio_productos;
+                    $envioDocumentacion = $licitacion->envio_documentacion;
+                    $muestras = $licitacion->muestras;
+                    $comisionEntrega = $licitacion->comision_de_entrega;
+                    $otrosGastosEentrega = $licitacion->otros_gastos_de_entrega;
+                    $gastosPoliza = $licitacion->gastos_poliza;
+                    $solvenciaFiscal = $licitacion->solvencia_fiscal;
+                    $poliza = $licitacion->poliza;
+                    $gastosOperativos = $envioProductos + $envioDocumentacion + $muestras + $comisionEntrega + $otrosGastosEentrega + $gastosPoliza + $solvenciaFiscal + $poliza + $comisiones;
+                    $utilidad =  $transaction->total_before_tax - $total_amount_inversion - $gastosOperativos - $impuesto - $gastosAdministrativos;
+                    $comisionLicitacion = $utilidad * ($comisionImpuesto->porcentaje_comision/100);
+                    $licitacion->update(['comisiones' => $comisiones,
+                                                    'impuestos' => $impuesto,
+                                                'gastos_administrativos' => $gastosAdministrativos,
+                                            'gastos_opertivos' => $gastosOperativos,
+                                            'precio_venta' => $transaction->total_before_tax,
+                                            'inversion'=> $total_amount_inversion,
+                                            'utilidad' => $utilidad,
+                                            'comision' => $comisionLicitacion]);
+                }
+
+                
 
                 //update service staff timer
                 if (!$is_direct_sale && $transaction->status == 'final') {

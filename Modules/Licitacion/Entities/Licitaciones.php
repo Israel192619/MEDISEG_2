@@ -40,11 +40,11 @@ class Licitaciones extends Model
         'poliza',
         'precio_venta',
         'inversion',
-        'gastos_operativos',
+        'gastos_opertivos',
         'impuestos',
         'gastos_administrativos',
         'comision',
-        'utiñidad',
+        'utilidad',
         'fecha_pago',
         'monto_pago'
     ];

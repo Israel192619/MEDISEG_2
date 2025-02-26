@@ -80,6 +80,22 @@ class DataController extends Controller
                                     ]
                                 );
                             }
+                            if (auth()->user()->can('licitacion.create')) {
+                                $sub->url(
+                                    action([
+                                        \Modules\Licitacion\Http\Controllers\TaxController::class,
+                                        'index',
+                                    ]),
+                                    __('licitacion::lang.impuestos'),
+                                    [
+                                        'icon' => '',
+                                        'active' =>
+                                            request()->segment(1) == 'licitacion' &&
+                                            /* request()->segment(2) == 'licitaciones' && */
+                                            request()->segment(2) == 'impuestos',
+                                    ]
+                                );
+                            }
                         },
 
                         [

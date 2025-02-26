@@ -230,7 +230,7 @@
 		        	<div class="col-md-4">
 				        <div class="form-group">
 				            {!! Form::label('custom_field_1', $label_1 ) !!}
-				            {!! Form::text('custom_field_1', $transaction->custom_field_1, ['class' => 'form-control','placeholder' => $custom_field_1_label, 'required' => $is_custom_field_1_required]); !!}
+				            {!! Form::text('custom_field_1', $transaction->custom_field_1, ['class' => 'form-control','placeholder' => $custom_field_1_label,'readonly', 'required' => $is_custom_field_1_required]); !!}
 				        </div>
 				    </div>
 		        @endif
@@ -350,8 +350,12 @@
 										@lang('restaurant.service_staff')
 									</th>
 								@endif
+								<th>
+									Precio unitario de compra
+								</th>
 								<th class="@if(!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif">
-									@lang('sale.unit_price')
+									{{-- @lang('sale.unit_price') --}}
+									Precio unitario de venta
 								</th>
 								<th class="@if(!auth()->user()->can('edit_product_discount_from_sale_screen')) hide @endif">
 									@lang('receipt.discount')

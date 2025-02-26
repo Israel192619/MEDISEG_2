@@ -408,8 +408,12 @@
 										@lang('restaurant.service_staff')
 									</th>
 								@endif
+								<th>
+									Precio unitario de compra
+								</th>
 								<th class="@if(!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif">
-									@lang('sale.unit_price')
+									{{-- @lang('sale.unit_price') --}}
+									Precio unitario de venta
 								</th>
 								<th class="@if(!auth()->user()->can('edit_product_discount_from_sale_screen')) hide @endif">
 									@lang('receipt.discount')
@@ -927,7 +931,7 @@
 @section('javascript')
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('#custom_field_1').attr('disabled', 'disabled');
+			$('#custom_field_1').attr('readonly', 'readonly');
 			$('#licitacion_id').change(function() {
 				var valorSeleccionado = $(this).val();
 				$('#custom_field_1').val(valorSeleccionado);
