@@ -2,177 +2,177 @@
 @section('title', __('licitacion::lang.create_tender'))
 
 @section('content')
-<!-- Content Header (Page header) -->
-<section class="content-header">
-    <h1 class="tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black">@lang('licitacion::lang.create_tender')</h1>
-    <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-    </ol> -->
-</section>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1 class="tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black">@lang('licitacion::lang.create_tender')</h1>
+        <!-- <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+            <li class="active">Here</li>
+        </ol> -->
+    </section>
 
-<!-- Main content -->
-<section class="content">
-   {!! Form::open([  
-    'route' => isset($licitacion) ? ['licitaciones.update', $licitacion->id] : 'licitaciones.store', 
-    'method' => isset($licitacion) ? 'put' : 'post',
-    'id' => 'tender_add_form'
-    ]) !!}
+    <!-- Main content -->
+    <section class="content">
+        {!! Form::open([
+         'route' => isset($licitacion) ? ['licitaciones.update', $licitacion->id] : 'licitaciones.store',
+         'method' => isset($licitacion) ? 'put' : 'post',
+         'id' => 'tender_add_form'
+         ]) !!}
 
-    @component('components.widget', ['class' => 'box-primary'])
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('codigo_de_licitacion', __('licitacion::lang.tender_code') . ':*') !!}
-                {!! Form::text('codigo_de_licitacion', $licitacion->codigo_de_licitacion ?? $licitacion->codigo_de_licitacion ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.tender_code')]); !!}
+        @component('components.widget', ['class' => 'box-primary'])
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('codigo_de_licitacion', __('licitacion::lang.tender_code') . ':*') !!}
+                        {!! Form::text('codigo_de_licitacion', $licitacion->codigo_de_licitacion ?? $licitacion->codigo_de_licitacion ?? null, ['class' => 'form-control', 'required',
+                        'placeholder' => __('licitacion::lang.tender_code')]); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('entidad', __('licitacion::lang.entity') . ':*') !!}
+                        {!! Form::text('entidad', $licitacion->entidad ?? null, ['class' => 'form-control', 'required',
+                        'placeholder' => __('licitacion::lang.entity')]); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('responsable_licitacion', __('licitacion::lang.responsible') . ':*') !!}
+                        {!! Form::text('responsable_licitacion', $licitacion->responsable_licitacion ?? null, ['class' => 'form-control', 'required',
+                        'placeholder' => __('licitacion::lang.responsible')]); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('estado', __('licitacion::lang.tender_status') . ':*') !!} {{-- @show_tooltip(__('tooltip.order_status')) --}}
+                        {!! Form::select('estado',$orderStatuses, $licitacion->estado ?? null, ['class' => 'form-control select2','id' => 'status_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('ciudad', __('licitacion::lang.city') . ':*') !!}
+                        {!! Form::select('ciudad',$cities, $licitacion->ciudad ?? null, ['class' => 'form-control select2','id' => 'city_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('telefono', __('licitacion::lang.phone') . ':*') !!}
+                        {!! Form::number('telefono', $licitacion->telefono ?? null, ['class' => 'form-control', 'required',
+                        'placeholder' => __('licitacion::lang.phone')]); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('cuce', __('licitacion::lang.cuce') . ':*') !!}
+                        {!! Form::text('cuce', $licitacion->cuce ?? null, ['class' => 'form-control', 'required',
+                        'placeholder' => __('licitacion::lang.cuce')]); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('objeto_contratacion', __('licitacion::lang.contract_object') . ':') !!}
+                        {!! Form::text('objeto_contratacion', $licitacion->objeto_contratacion ?? null, ['class' => 'form-control',
+                        'placeholder' => __('licitacion::lang.contract_object')]); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('tipo_de_proceso', __('licitacion::lang.process_type') . ':*') !!}
+                        {!! Form::text('tipo_de_proceso', $licitacion->tipo_de_proceso ?? null, ['class' => 'form-control', 'required',
+                        'placeholder' => __('licitacion::lang.process_type')]); !!}
+                    </div>
+                </div>
             </div>
-        </div>	
-		<div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('entidad', __('licitacion::lang.entity') . ':*') !!}
-                {!! Form::text('entidad', $licitacion->entidad ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.entity')]); !!}
-            </div>
-        </div>
-		<div class="col-sm-4">  
-            <div class="form-group">
-                {!! Form::label('responsable_licitacion', __('licitacion::lang.responsible') . ':*') !!}
-                {!! Form::text('responsable_licitacion', $licitacion->responsable_licitacion ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.responsible')]); !!}
-            </div>
-        </div>	
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('estado', __('licitacion::lang.tender_status') . ':*') !!} {{-- @show_tooltip(__('tooltip.order_status')) --}}
-                {!! Form::select('estado',$orderStatuses, $licitacion->estado ?? null, ['class' => 'form-control select2','id' => 'status_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('ciudad', __('licitacion::lang.city') . ':*') !!}
-                {!! Form::select('ciudad',$cities, $licitacion->ciudad ?? null, ['class' => 'form-control select2','id' => 'city_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
-            </div>
-        </div>
-		<div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('telefono', __('licitacion::lang.phone') . ':*') !!}
-                {!! Form::number('telefono', $licitacion->telefono ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.phone')]); !!}
-            </div>
-        </div>
-		<div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('cuce', __('licitacion::lang.cuce') . ':*') !!}
-                {!! Form::text('cuce', $licitacion->cuce ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.cuce')]); !!}
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('objeto_contratacion', __('licitacion::lang.contract_object') . ':') !!}
-                {!! Form::text('objeto_contratacion', $licitacion->objeto_contratacion ?? null, ['class' => 'form-control',
-                'placeholder' => __('licitacion::lang.contract_object')]); !!}
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('tipo_de_proceso', __('licitacion::lang.process_type') . ':*') !!}
-                {!! Form::text('tipo_de_proceso', $licitacion->tipo_de_proceso ?? null, ['class' => 'form-control', 'required',
-                'placeholder' => __('licitacion::lang.process_type')]); !!}
-            </div>
-        </div>
-    </div>
-    @endcomponent
-    @component('components.widget', ['class' => 'box-primary'])
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('forma_de_adjudicacion', __('licitacion::lang.award_method') . ':*') !!}
-                {!! Form::select('forma_de_adjudicacion', $award_method, $licitacion->forma_de_adjudicacion ?? null, ['class' => 'form-control select2','id' => 'award_method_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                {!! Form::label('fecha_vencimiento', __('lang_v1.due_date') . ':') !!}
-                @show_tooltip(__('licitacion::lang.delivery_date_tooltip'))
-                <div class="input-group">
+        @endcomponent
+        @component('components.widget', ['class' => 'box-primary'])
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('forma_de_adjudicacion', __('licitacion::lang.award_method') . ':*') !!}
+                        {!! Form::select('forma_de_adjudicacion', $award_method, $licitacion->forma_de_adjudicacion ?? null, ['class' => 'form-control select2','id' => 'award_method_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        {!! Form::label('fecha_vencimiento', __('lang_v1.due_date') . ':') !!}
+                        @show_tooltip(__('licitacion::lang.delivery_date_tooltip'))
+                        <div class="input-group">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
-                    {!! Form::text('fecha_vencimiento', $licitacion->fecha_vencimiento ?? null, ['class' => 'form-control', 'readonly']); !!}
-                    <span class="input-group-addon">
+                            {!! Form::text('fecha_vencimiento', $licitacion->fecha_vencimiento ?? null, ['class' => 'form-control', 'readonly']); !!}
+                            <span class="input-group-addon">
                         <i class="fas fa-times-circle cursor-pointer clear_delivery_date"></i>
                     </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('mes', __('licitacion::lang.month') . ':*') !!}
-                {!! Form::select('mes',$months, $licitacion->mes ?? null, ['class' => 'form-control select2','id' => 'month_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('hora_de_subasta', __('licitacion::lang.auction_time') . ':') !!}
-                <div class="input-group">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('mes', __('licitacion::lang.month') . ':*') !!}
+                        {!! Form::select('mes',$months, $licitacion->mes ?? null, ['class' => 'form-control select2','id' => 'month_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('hora_de_subasta', __('licitacion::lang.auction_time') . ':') !!}
+                        <div class="input-group">
                     <span class="input-group-addon">
                         <i class="fa fa-clock"></i>
                     </span>
-                    {!! Form::text('hora_de_subasta', $licitacion->hora_de_subasta ?? null, ['class' => 'form-control', 'readonly']); !!}
-                    <span class="input-group-addon">
+                            {!! Form::text('hora_de_subasta', $licitacion->hora_de_subasta ?? null, ['class' => 'form-control', 'readonly']); !!}
+                            <span class="input-group-addon">
                         <i class="fas fa-times-circle cursor-pointer clear_hora"></i>
                     </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('garantias_solicitadas', __('licitacion::lang.requested_guarantees') . ':') !!}
-                {!! Form::text('garantias_solicitadas', $licitacion->garantias_solicitadas ?? null, ['class' => 'form-control',
-                'placeholder' => __('licitacion::lang.requested_guarantees')]); !!}
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('presentacion_de_muestra', __('licitacion::lang.sample_provision') . ':') !!}
-                <br>
-                {!! Form::hidden('presentacion_de_muestra', 0) !!}
-                {!! Form::checkbox('presentacion_de_muestra', 1, $licitacion->presentacion_de_muestra ?? false, ['class' => 'input-icheck','style' => 'margin-top: 10px;']) !!}
-                {!! Form::label('presentacion_de_muestra', __('Sí')) !!}
-                <div style="height: 20px;" class="extra-space"></div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('direccion_de_muestra', __('licitacion::lang.sample_address') . ':') !!}
-                {!! Form::text('direccion_de_muestra', $licitacion->direccion_de_muestra ?? null, ['class' => 'form-control',
-                'placeholder' => __('licitacion::lang.sample_address')]); !!}
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                {!! Form::label('fecha_subida_proceso', __('licitacion::lang.process_upload_date') . ':') !!}
-                @show_tooltip(__('licitacion::lang.expected_process_upload_date'))
-                <div class="input-group">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('garantias_solicitadas', __('licitacion::lang.requested_guarantees') . ':') !!}
+                        {!! Form::text('garantias_solicitadas', $licitacion->garantias_solicitadas ?? null, ['class' => 'form-control',
+                        'placeholder' => __('licitacion::lang.requested_guarantees')]); !!}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('presentacion_de_muestra', __('licitacion::lang.sample_provision') . ':') !!}
+                        <br>
+                        {!! Form::hidden('presentacion_de_muestra', 0) !!}
+                        {!! Form::checkbox('presentacion_de_muestra', 1, $licitacion->presentacion_de_muestra ?? false, ['class' => 'input-icheck','style' => 'margin-top: 10px;']) !!}
+                        {!! Form::label('presentacion_de_muestra', __('Sí')) !!}
+                        <div style="height: 20px;" class="extra-space"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('direccion_de_muestra', __('licitacion::lang.sample_address') . ':') !!}
+                        {!! Form::text('direccion_de_muestra', $licitacion->direccion_de_muestra ?? null, ['class' => 'form-control',
+                        'placeholder' => __('licitacion::lang.sample_address')]); !!}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        {!! Form::label('fecha_subida_proceso', __('licitacion::lang.process_upload_date') . ':') !!}
+                        @show_tooltip(__('licitacion::lang.expected_process_upload_date'))
+                        <div class="input-group">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
-                    {!! Form::text('fecha_subida_proceso', $licitacion->fecha_subida_proceso ?? null, ['class' => 'form-control', 'readonly']); !!}
-                    <span class="input-group-addon">
+                            {!! Form::text('fecha_subida_proceso', $licitacion->fecha_subida_proceso ?? null, ['class' => 'form-control', 'readonly']); !!}
+                            <span class="input-group-addon">
                         <i class="fas fa-times-circle cursor-pointer clear_process_upload_date"></i>
                     </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('resultado', __('licitacion::lang.result') . ':*') !!}
+                        {!! Form::select('resultado',$resultados, $licitacion->resultado ?? null, ['class' => 'form-control select2','id' => 'result_id', 'placeholder' => __('messages.please_select'), 'required']); !!}
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('resultado', __('licitacion::lang.result') . ':') !!}
-                {!! Form::select('resultado',$resultados, $licitacion->resultado ?? null, ['class' => 'form-control select2','id' => 'result_id', 'placeholder' => __('messages.please_select')]); !!}
-            </div>
-        </div>
-    </div>
     @endcomponent
     @component('components.widget', ['class' => 'box-primary'])
     <div class="row">
@@ -300,43 +300,84 @@
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
-                    {!! Form::text('fecha_pago', $licitacion->fecha_pago ?? $default_datetime, ['class' => 'form-control', 'readonly']); !!}
-                    <span class="input-group-addon">
+                            {!! Form::text('fecha_pago', $licitacion->fecha_pago ?? $default_datetime, ['class' => 'form-control', 'readonly']); !!}
+                            <span class="input-group-addon">
                         <i class="fas fa-times-circle cursor-pointer clear_payment_date"></i>
                     </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('monto_pago', __('licitacion::lang.payment_amount') . ':') !!}
+                        {!! Form::number('monto_pago', $licitacion->monto_pago ?? null, ['class' => 'form-control',
+                        'placeholder' => __('licitacion::lang.payment_amount')]); !!}
+                    </div>
+                </div>
+
+
+            </div>
+        @endcomponent
+        @component('components.widget', ['class' => 'box-primary'])
+
+            <div id="contenedorCampos">
+                <h4>Lista de Productos </h4>
+                <div class="row campo">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="items[]" placeholder="Item">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="nombres[]" placeholder="Nombre">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="especificaciones[]"
+                                   placeholder="Especificacion">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="unidades[]" placeholder="Unidad">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="precios[]" placeholder="Precio">
+                        </div>
+                    </div>
+                    <button type="button" class="tw-dw-btn tw-dw-btn-sm bg-maroon  eliminar">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-sm tw-text-white "
+                    id="agregar">Agregar Campo
+            </button>
+        @endcomponent
+
+        <div class="row">
+            <div class="col-sm-12">
+                <input type="hidden" name="submit_type" id="submit_type">
+                <div class="text-center">
+                    <div class="btn-group">
+                        @if(!isset($licitacion))
+                            <button type="submit" value="save_n_add_another"
+                                    class="tw-dw-btn tw-dw-btn-lg bg-maroon submit_product_form">@lang('lang_v1.save_n_add_another')</button>
+                        @endif
+                        <button type="submit" value="submit"
+                                class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-lg tw-text-white submit_product_form">@lang('messages.save')</button>
+                    </div>
+
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('monto_pago', __('licitacion::lang.payment_amount') . ':') !!} 
-                {!! Form::number('monto_pago', $licitacion->monto_pago ?? null, ['class' => 'form-control',
-                'placeholder' => __('licitacion::lang.payment_amount')]); !!}
-            </div>
-        </div>
+        {!! Form::close() !!}
 
-        
-    </div>
-    @endcomponent
-
-    <div class="row">
-        <div class="col-sm-12">
-            <input type="hidden" name="submit_type" id="submit_type">
-            <div class="text-center">
-                <div class="btn-group">
-                    @if(!isset($licitacion))
-                    <button type="submit" value="save_n_add_another" class="tw-dw-btn tw-dw-btn-lg bg-maroon submit_product_form">@lang('lang_v1.save_n_add_another')</button>
-                    @endif
-                    <button type="submit" value="submit" class="tw-dw-btn tw-dw-btn-primary tw-dw-btn-lg tw-text-white submit_product_form">@lang('messages.save')</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    {!! Form::close() !!}
-
-</section>
-
+    </section>
 
 @endsection
 
@@ -344,78 +385,119 @@
 
     <script type="text/javascript">
 
-    $(document).ready(function() {
-        __page_leave_confirmation('#tender_add_form');
-    });
+        $(document).ready(function() {
+            $('#agregar').click(function(e) {
+                e.preventDefault();
+                let nuevoCampo = `<div class=" row campo">
+                    <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="items[]" placeholder="Item">
+                    </div>
+                    </div>
+                    <div class="col-sm-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="nombres[]" placeholder="Nombre">
+                    </div>
+                    </div>
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="specificaciones[]" placeholder="Especificacion">
+                    </div>
+                    </div>
+                    <div class="col-sm-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="unidades[]" placeholder="Unidad">
+                    </div>
+                    </div>
+                    <div class="col-sm-4">
+                    <div class="form-group">
+                        <input type="number" class="form-control" name="precios[]" placeholder="Precio">
+                    </div>
+                    </div>
+                    <button type="button" class="tw-dw-btn tw-dw-btn-sm bg-maroon eliminar">Eliminar</button>
+                </div>`;
+                $('#contenedorCampos').append(nuevoCampo);
+            });
+        
+            $(document).on('click', '.eliminar', function(e) {
+                e.preventDefault();
+                $(this).parent().remove();
+            });
 
-    $('#hora_de_subasta').datetimepicker({
-        format: 'LT',
-        ignoreReadonly: true,
-        widgetPositioning: {
-        vertical: 'top'
-    }
-    });
-    $(document).on('click', '.clear_hora', function() {
-        $('#hora_de_subasta').data("DateTimePicker").clear();
-    });
-    //
-    $('#fecha_vencimiento').datetimepicker({
-        format: moment_date_format,
-        ignoreReadonly: true,
-        widgetPositioning: {
-        vertical: 'top'
-    }
-    });
-
-    $(document).on('click', '.clear_delivery_date', function() {
-        $('#fecha_vencimiento').data("DateTimePicker").clear();
-    });
-    //
-    $('#fecha_subida_proceso').datetimepicker({
-        format: moment_date_format,
-        ignoreReadonly: true,
-        widgetPositioning: {
-        vertical: 'top'
-    }
-    });
-
-    $(document).on('click', '.clear_process_upload_date', function() {
-        $('#fecha_subida_proceso').data("DateTimePicker").clear();
-    });
-    //
-    $('#fecha_pago').datetimepicker({
-        format: moment_date_format,
-        ignoreReadonly: true,
-        widgetPositioning: {
-        vertical: 'top'
-    }
-    });
-
-    $(document).on('click', '.clear_payment_date', function() {
-        $('#fecha_pago').data("DateTimePicker").clear();
-    });
-    $('#status_id, #city_id, #award_method_id, #month_id, #result_id').on('select2:open', function() {
-        $('.select2-search__field').css({
-            'background-color': '#E6E6FA',
-            'color': '#000000'
         });
-    });
 
-    $(document).on('click', '.submit_product_form', function(e) {
-    e.preventDefault();
-    var submit_type = $(this).attr('value');
-    $('#submit_type').val(submit_type);
-    if ($('form#tender_add_form').valid()) {
-            $('form#tender_add_form').submit();
-        }
-    });
+        $(document).ready(function() {
+            __page_leave_confirmation('#tender_add_form');
+        });
 
-</script>
-<style>
-    @media (max-width: 991px) {
-        .extra-space {
-            display: none;
+        $('#hora_de_subasta').datetimepicker({
+            format: 'LT',
+            ignoreReadonly: true,
+            widgetPositioning: {
+                vertical: 'top',
+            },
+        });
+        $(document).on('click', '.clear_hora', function() {
+            $('#hora_de_subasta').data('DateTimePicker').clear();
+        });
+        //
+        $('#fecha_vencimiento').datetimepicker({
+            format: moment_date_format + ' ' + moment_time_format,
+            ignoreReadonly: true,
+            widgetPositioning: {
+                vertical: 'top',
+            },
+        });
+
+        $(document).on('click', '.clear_delivery_date', function() {
+            $('#fecha_vencimiento').data('DateTimePicker').clear();
+        });
+        //
+        $('#fecha_subida_proceso').datetimepicker({
+            format: moment_date_format + ' ' + moment_time_format,
+            ignoreReadonly: true,
+            widgetPositioning: {
+                vertical: 'top',
+            },
+        });
+
+        $(document).on('click', '.clear_process_upload_date', function() {
+            $('#fecha_subida_proceso').data('DateTimePicker').clear();
+        });
+        //
+        $('#fecha_pago').datetimepicker({
+            format: moment_date_format + ' ' + moment_time_format,
+            ignoreReadonly: true,
+            widgetPositioning: {
+                vertical: 'top',
+            },
+        });
+
+        $(document).on('click', '.clear_payment_date', function() {
+            $('#fecha_pago').data('DateTimePicker').clear();
+        });
+        $('#status_id, #city_id, #award_method_id, #month_id, #result_id').on('select2:open', function() {
+            $('.select2-search__field').css({
+                'background-color': '#E6E6FA',
+                'color': '#000000',
+            });
+        });
+
+        $(document).on('click', '.submit_product_form', function(e) {
+            e.preventDefault();
+            var submit_type = $(this).attr('value');
+            $('#submit_type').val(submit_type);
+            if ($('form#tender_add_form').valid()) {
+                $('form#tender_add_form').submit();
+            }
+        });
+
+    </script>
+    <style>
+        @media (max-width: 991px) {
+            .extra-space {
+                display: none;
+            }
         }
-    }
-</style>
+    </style>
 @endsection

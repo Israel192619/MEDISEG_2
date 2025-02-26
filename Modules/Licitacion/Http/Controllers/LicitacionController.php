@@ -128,6 +128,27 @@ class LicitacionController extends Controller
             'cuce' => 'required',
         ]);
 
+        $array1 = $request->items;
+        $array2 = $request->nombres;
+        $array3 = $request->especificaciones;
+        $array4= $request->unidades;
+        $array5 = $request->precios;
+        $combinedArray = [];
+        for ($i = 0; $i < count($array1); $i++) {
+            $combinedArray[] = [
+                'item' => $array1[$i] ?? null,
+                'nombre' => $array2[$i] ?? null,
+                'especificacion' => $array3[$i] ?? null,
+                'unidad' => $array4[$i] ?? null,
+                'preci' => $array5[$i] ?? null,
+                'total' => ($array5[$i] * $array4[$i])?? null,
+            ];
+        }
+        $jsonResult = json_encode($combinedArray, JSON_PRETTY_PRINT);
+        $request->lista_productos = $jsonResult;
+        $licitacion = new Licitaciones();
+        $licitacion->lista_productos = $request->lista_productos;
+        $licitacion->save();
 
         $request->merge([
             'fecha_vencimiento' => $this->licitacionUtil->uf_date(
